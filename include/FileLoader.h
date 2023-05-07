@@ -2,36 +2,36 @@
 #include <fstream>
 #include <vector>
 
-class File {
+class FileLoader {
 public:
-	File() = default;
+	FileLoader() = default;
 
-	File(const std::string& dir, bool binaryMode = true):
+	FileLoader(const std::string& dir, bool binaryMode = true):
 		directory(dir)
 	{
 		loadData(dir, binaryMode);
 	}
 
-	File(const File& other):
+	FileLoader(const FileLoader& other):
 		sourceData(other.sourceData),
 		directory(other.directory)
 	{
 	}
 	
-	File(File&& other):
+	FileLoader(FileLoader&& other):
 		sourceData(std::move(other.sourceData)),
 		directory(std::move(other.directory))
 	{
 	}
 
-	File& operator=(const File& other) {
+	FileLoader& operator=(const FileLoader& other) {
 		sourceData = other.sourceData;
 		directory = other.directory;
 
 		return *this;
 	}
 
-	File& operator=(File&& other) {
+	FileLoader& operator=(FileLoader&& other) {
 		sourceData = std::move(other.sourceData);
 		directory = std::move(other.directory);
 
@@ -47,7 +47,14 @@ public:
 	}
 
 	void loadData(const std::string& dir, bool binaryMode = true) {
-		std::ifstream ifs(dir);
+		std::ifstream ifs;
+
+		if (binaryMode == true) {
+			ifs.open(dir, std::ios::binary);
+		}
+		else {
+			ifs.open(dir);
+		}
 
 		if (ifs.is_open() == false) {
 			throw std::invalid_argument("File was not opened");
