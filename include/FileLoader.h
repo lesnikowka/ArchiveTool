@@ -71,9 +71,9 @@ public:
 
 		std::string data(buff);
 
-		delete[] buff;
-
 		sourceData = std::move(std::string(buff));
+
+		delete[] buff;
 	}
 
 private:

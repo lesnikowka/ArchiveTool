@@ -13,9 +13,6 @@ public:
 
 	}
 
-	void save(const std::string& outputDirectory) {
-
-	}
 
 	void clear() {
 		files.clear();
