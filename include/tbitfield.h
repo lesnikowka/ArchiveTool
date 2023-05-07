@@ -5,7 +5,7 @@
 
 using namespace std;
 
-typedef unsigned long long int TELEM;
+typedef unsigned char TELEM;
 
 class TBitField													
 {																
@@ -20,6 +20,7 @@ private:
 public:											
   TBitField(int len);                      
   TBitField(const TBitField &bf);          
+  TBitField(TBitField &&bf);          
   ~TBitField();                            
 												
   				
@@ -32,6 +33,7 @@ public:
   int operator==(const TBitField &bf) const;
   int operator!=(const TBitField &bf) const;
   TBitField& operator=(const TBitField &bf);
+  TBitField& operator=(TBitField &&bf);
   TBitField  operator|(const TBitField &bf);
   TBitField  operator&(const TBitField &bf);
   TBitField  operator~(void);               

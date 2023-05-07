@@ -26,6 +26,16 @@ TBitField::TBitField(const TBitField &bf)
     memcpy(pMem, bf.pMem, MemLen * sizeof(TELEM));
 }
 
+TBitField::TBitField(TBitField&& bf)
+{
+    BitLen = MemLen = 0;
+    pMem = nullptr;
+
+    std::swap(BitLen, bf.BitLen);
+    std::swap(MemLen, bf.MemLen);
+    std::swap(pMem, bf.pMem);
+}
+
 TBitField::~TBitField()
 {
     delete[] pMem;
@@ -96,6 +106,15 @@ TBitField& TBitField::operator=(const TBitField& bf)
     BitLen = bf.BitLen;
 
     memcpy(pMem, bf.pMem, MemLen * sizeof(TELEM));
+
+    return *this;
+}
+
+TBitField& TBitField::operator=(TBitField&& bf)
+{
+    std::swap(BitLen, bf.BitLen);
+    std::swap(MemLen, bf.MemLen);
+    std::swap(pMem, bf.pMem);
 
     return *this;
 }

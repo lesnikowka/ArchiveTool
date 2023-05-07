@@ -38,11 +38,11 @@ public:
 		return *this;
 	}
 
-	std::string getData() {
+	const std::string& getData() const{
 		return sourceData;
 	}
 
-	std::string getDirectory() {
+	std::string getDirectory() const {
 		return directory;
 	}
 
