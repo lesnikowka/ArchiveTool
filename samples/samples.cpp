@@ -1,8 +1,6 @@
 #include <iostream>
 #include "Archiver.h"
-#include "CompressedFile.h"
-#include "FileLoader.h"
-#include "RLE-encoder.h"
+#include "File.h"
 
 unsigned char getSignByte(bool isSimilarSequence, unsigned lenght) {
 	assert(lenght <= 127);
@@ -21,20 +19,23 @@ std::pair<bool, unsigned> getLenghtAndIsSimilar(unsigned char c) {
 }
 
 int main() {
-	std::string filename = "c.pdf";
+	std::string filename = "mir.txt";
 	Archiver arch;
 	arch.addFile("C:/Users/Nikita/Desktop/data/"+filename);
 	arch.compress();
 	arch.save("C:/Users/Nikita/Desktop/data/result_");
-
-	FileLoader fl("C:/Users/Nikita/Desktop/data/result_"+ filename);
-
-	RLEencoder rlen;
 	
-	std::string afterEncoding = rlen.encode(fl.getData());
+	File fl;
+	fl.data = loadData("C:/Users/Nikita/Desktop/data/result_" + filename);
+	fl.directory = "C:/Users/Nikita/Desktop/data/result_" + filename;
+	
+	
+	RLE rlen;
+	
+	std::string afterDecoding = rlen.decode(fl.data);
 	std::ofstream ofs("C:/Users/Nikita/Desktop/data/after_encoding"+ filename, std::ios::binary);
-	ofs << afterEncoding;
+	ofs << afterDecoding;
 	
-
+	ofs.close();
 	
 }

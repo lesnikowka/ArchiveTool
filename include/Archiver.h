@@ -1,7 +1,6 @@
 #pragma once
 
-#include "FileLoader.h"
-#include "CompressedFile.h"
+#include "File.h"
 #include "RLE.h"
 #include <list>
 
@@ -35,28 +34,27 @@ public:
 		return *this;
 	}
 	
-	void addFile(const std::string& directory, bool binaryMode = true) {
-		files.push_back(std::move(FileLoader(directory, binaryMode)));
+	void addFile(const std::string& directory) {
+		files.push_back(File());
+		files.back().data = loadData(directory);
+		files.back().directory = directory;
 	}
 
 
 	void compress() {
 		RLE rle;
 
-		for (const FileLoader& fl : files) {
-			rle.processData(fl.getData());
-			
-			compressedFiles.push_back(std::move(CompressedFile(fl.getDirectory(),rle.getProcessedData())));
+		for (const File& fl : files) {
+			compressedFiles.push_back(File());
+
+			compressedFiles.back().data = rle.encode(fl.data);
+			compressedFiles.back().directory = fl.directory;
 		}
 	}
 
-	void save(const std::string& outputDir, bool binaryMode = true) {
-		for (const CompressedFile& fl: compressedFiles) {
-			std::ofstream ofs(outputDir + fl.getName(), std::ios::binary);
-
-			ofs << fl.getData();
-
-			ofs.close();
+	void save(const std::string& outputDir) {
+		for (const File& fl: compressedFiles) {
+			saveFile(fl, outputDir);
 		}
 	}
 
@@ -65,6 +63,6 @@ public:
 		compressedFiles.clear();
 	}
 private:
-	std::list<FileLoader> files;
-	std::list<CompressedFile> compressedFiles;
+	std::list<File> files;
+	std::list<File> compressedFiles;
 };
