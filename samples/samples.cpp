@@ -26,16 +26,13 @@ int main() {
 	//arch.compress();
 	//arch.save("C:/Users/Nikita/Desktop/data/result");
 
-	//RLEencoder rlen;
-	//FileLoader fl("C:/Users/Nikita/Desktop/data/resultbd.pdf");
-	//std::string afterEncoding = rlen.encode(fl.getData());
-	//std::ofstream ofs("C:/Users/Nikita/Desktop/data/resultbaafterencoding", std::ios::binary);
-	//ofs << afterEncoding;
+	RLEencoder rlen;
+	FileLoader fl("C:/Users/Nikita/Desktop/data/resultbd.pdf");
+	std::string afterEncoding = rlen.encode(fl.getData());
+	std::ofstream ofs("C:/Users/Nikita/Desktop/data/resultbaafterencoding", std::ios::binary);
+	ofs << afterEncoding;
 
-	std::cout << (int)getLenghtAndIsSimilar( getSignByte(true, 89)).first;
+	//std::cout << (int)getLenghtAndIsSimilar( getSignByte(false, 89)).first;
 
-	//unsigned char c = 1;
-	//c = c << 7;
-	//
-	//std::cout << (int)c;
+	
 }
