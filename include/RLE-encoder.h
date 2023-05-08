@@ -18,7 +18,7 @@ public:
 				i++;
 			}
 			else {
-				encodedData += data.substr(i+1, info.second - 1);
+				encodedData += data.substr(i+1, info.second);
 				i += info.second;
 			}
 		}
