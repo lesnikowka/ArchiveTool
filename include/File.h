@@ -8,8 +8,11 @@
 
 struct File {
 	std::string data;
-
 	std::string directory;
+
+	File(const std::string& data_, std::string directory_) : data(data_), directory(directory_) {}
+
+	File(std::string&& data_, std::string directory_) : data(data_), directory(directory_) {}
 };
 
 std::string loadData(const std::string& dir) {
@@ -33,6 +36,11 @@ std::string loadData(const std::string& dir) {
 	return sourceData;
 }
 
+File loadFile(const std::string& dir) {
+	File file(loadData(dir), dir);
+
+	return file;
+}
 
 std::string getName(std::string directory) {
 	int leftBound = directory.rfind('/');

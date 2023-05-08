@@ -35,9 +35,7 @@ public:
 	}
 	
 	void addFile(const std::string& directory) {
-		files.push_back(File());
-		files.back().data = loadData(directory);
-		files.back().directory = directory;
+		files.push_back(loadFile(directory))
 	}
 
 
@@ -45,10 +43,7 @@ public:
 		RLE rle;
 
 		for (const File& fl : files) {
-			compressedFiles.push_back(File());
-
-			compressedFiles.back().data = rle.encode(fl.data);
-			compressedFiles.back().directory = fl.directory;
+			compressedFiles.push_back(File(rle.encode(fl.data), fl.directory));
 		}
 	}
 
