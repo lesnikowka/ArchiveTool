@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
   TBitField(int len);                      
   TBitField(const TBitField &bf);          
   TBitField(TBitField &&bf);          
-  ~TBitField();                            
+  ~TBitField();
 												
   				
   int GetLength(void) const noexcept;  

@@ -51,8 +51,6 @@ TELEM TBitField::GetMemMask(const int n) const noexcept
     return ((TELEM)1) << (n & (sizeof(TELEM) * 8 - 1));
 }
 
-
-
 int TBitField::GetLength(void) const noexcept 
 {
   return BitLen;
@@ -172,7 +170,6 @@ TBitField TBitField::operator~(void)
     
     return result;
 }
-
 
 
 istream &operator>>(istream &istr, TBitField &bf) 

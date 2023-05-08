@@ -1,5 +1,8 @@
+#pragma once
+
 #include "FileLoader.h"
 #include "CompressedFile.h"
+#include "RLE.h"
 #include <list>
 
 class Archiver {
@@ -32,13 +35,31 @@ public:
 		return *this;
 	}
 	
-	void addFile(std::string& directory, bool binaryMode = true) {
-		files.push_back(FileLoader(directory, binaryMode));
+	void addFile(const std::string& directory, bool binaryMode = true) {
+		files.push_back(std::move(FileLoader(directory, binaryMode)));
 	}
 
 
 	void compress() {
+		RLE rle;
 
+		for (const FileLoader& fl : files) {
+			rle.processData(fl.getData());
+			
+			compressedFiles.push_back(std::move(CompressedFile(fl.getDirectory(),rle.getProcessedData())));
+		}
+	}
+
+	void save(const std::string& outputDir, bool binaryMode = true) {
+		for (const CompressedFile& fl: compressedFiles) {
+			std::ofstream ofs(outputDir + fl.getName(), std::ios::binary);
+
+			std::cout << fl.getName();
+
+			ofs << fl.getData();
+
+			ofs.close();
+		}
 	}
 
 	void clear() {

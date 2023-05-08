@@ -13,7 +13,7 @@ set(MP_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(MP_UI "${CMAKE_CURRENT_SOURCE_DIR}/ui")
 set(MP_SAMPLES "${CMAKE_CURRENT_SOURCE_DIR}/samples")
 
-include_directories(include)
+include_directories(${MP_INCLUDE})
 
 add_subdirectory(src)
 add_subdirectory(ui)

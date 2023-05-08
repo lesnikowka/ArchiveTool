@@ -1,3 +1,5 @@
+#pragma once
+
 #include "tbitfield.h"
 #include <string>
 
@@ -5,13 +7,13 @@ class CompressedFile {
 public:
 	CompressedFile() = default;
 
-	CompressedFile(const std::string& dir, const TBitField& compressedData_) :
+	CompressedFile(const std::string& dir, const std::string& compressedData_) :
 		directory(dir),
 		compressedData(compressedData_)
 	{
 	}
 
-	CompressedFile(const std::string& dir, TBitField&& compressedData_) :
+	CompressedFile(const std::string& dir, std::string&& compressedData_) :
 		directory(dir),
 		compressedData(compressedData_)
 	{
@@ -43,16 +45,16 @@ public:
 		return *this;
 	}
 
-	const TBitField& getData() const {
+	const std::string& getData() const {
 		return compressedData;
 	}
 
-	void setCompressedFile(const std::string& dir, const TBitField& compressedData_) {
+	void setCompressedFile(const std::string& dir, const std::string& compressedData_) {
 		compressedData = compressedData_;
 		directory = dir;
 	}
 
-	void setCompressedFile(const std::string& dir, TBitField&& compressedData_) {
+	void setCompressedFile(const std::string& dir, std::string&& compressedData_) {
 		compressedData = compressedData_;
 		directory = dir;
 	}
@@ -61,8 +63,20 @@ public:
 		return directory;
 	}
 
+	std::string getName() const {
+		int leftBound = directory.rfind('/');
+
+		if (leftBound == std::string::npos) {
+			leftBound = 0;
+		}
+		else {
+			leftBound++;
+		}
+
+		return directory.substr(leftBound);
+	}
 private:
-	TBitField compressedData;
+	std::string compressedData;
 
 	std::string directory;
 };

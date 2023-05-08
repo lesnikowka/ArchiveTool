@@ -1,6 +1,10 @@
+#pragma once
+
 #include <string>
 #include <fstream>
 #include <vector>
+#include <sstream>
+#include <iterator>
 
 class FileLoader {
 public:
@@ -46,34 +50,38 @@ public:
 		return directory;
 	}
 
+	std::string getName() const {
+		int leftBound = directory.rfind('/');
+
+		if (leftBound == std::string::npos) {
+			leftBound = 0;
+		}
+		else {
+			leftBound++;
+		}
+
+		return directory.substr(leftBound);
+	}
+
 	void loadData(const std::string& dir, bool binaryMode = true) {
 		std::ifstream ifs;
-
+		std::ostringstream os;
+		
 		if (binaryMode == true) {
 			ifs.open(dir, std::ios::binary);
 		}
 		else {
 			ifs.open(dir);
 		}
-
+		
 		if (ifs.is_open() == false) {
 			throw std::invalid_argument("File was not opened");
 		}
+		
+		os << ifs.rdbuf();
 
-		ifs.seekg(0, std::ios::end);
-		std::streampos lenght = ifs.tellg();
-		ifs.seekg(0, std::ios::beg);
-
-		char* buff = new char[lenght];
-
-		ifs.read(buff, lenght);
-		ifs.close();
-
-		std::string data(buff);
-
-		sourceData = std::move(std::string(buff));
-
-		delete[] buff;
+		sourceData = std::move(os.str());
+		
 	}
 
 private:
