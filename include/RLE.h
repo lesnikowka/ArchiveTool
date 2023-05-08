@@ -18,12 +18,11 @@ public:
 		
 			for (unsigned i = 0; i < data.size() - 1; i++) {
 				if (i - start > 126) {
+        result += getSignByte(similar, i - start);
 					if (similar) {
-						result += getSignByte(similar, i - start);
 						result += data[i - 1];
 					}
 					else {
-						result += getSignByte(similar, i - start);
 						result += data.substr(start, i - start - 1);
 					}
 					start = i;
