@@ -54,8 +54,6 @@ public:
 		for (const CompressedFile& fl: compressedFiles) {
 			std::ofstream ofs(outputDir + fl.getName(), std::ios::binary);
 
-			std::cout << fl.getName();
-
 			ofs << fl.getData();
 
 			ofs.close();

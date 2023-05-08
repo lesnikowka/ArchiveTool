@@ -8,15 +8,18 @@ public:
 	RLE() = default;
 	
 	void processData(const std::string& data) {
+		
+		
 		std::string result;
+		int maxs = 100;
 		
 		if (data.size() > 3) {
 		
 			bool similar = data[0] == data[1];
 		
-			unsigned start = 0;
+			int start = 0;
 		
-			for (unsigned i = 0; i < data.size() - 1; i++) {
+			for (int i = 0; i < data.size() - 1; i++) {
 				if (i - start > 126) {
         result += getSignByte(similar, i - start);
 					if (similar) {
@@ -24,12 +27,13 @@ public:
 					}
 					else {
 						result += data.substr(start, i - start - 1);
+						
 					}
 					start = i;
 				}
 				if (data[i] == data[i + 1] && similar == false) {
 					result += getSignByte(false, i - start);
-					result += data.substr(start, i - start - 1);
+					result += data.substr(start, i - start);
 					start = i;
 					similar = true;
 				}
@@ -42,7 +46,7 @@ public:
 			}
 		
 			result += getSignByte(similar, data.size() - start);
-			result += data.substr(start, data.size() - start - 1);			
+			result += data.substr(start, data.size() - start - 1);
 		}
 		
 		processedData = std::move(result);
@@ -54,8 +58,8 @@ public:
 private:
 	std::string processedData;
 
-	unsigned char getSignByte(bool isSimilarSequence, unsigned lenght) {
-		assert(lenght <= 127);
+	unsigned char getSignByte(bool isSimilarSequence, int lenght) {
+		assert(lenght <= 127 && lenght >=0);
 
 		unsigned char result = isSimilarSequence;
 

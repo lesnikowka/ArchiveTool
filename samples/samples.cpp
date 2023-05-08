@@ -21,17 +21,21 @@ std::pair<bool, unsigned> getLenghtAndIsSimilar(unsigned char c) {
 }
 
 int main() {
-	//Archiver arch;
-	//arch.addFile("C:/Users/Nikita/Desktop/data/bd.pdf");
-	//arch.compress();
-	//arch.save("C:/Users/Nikita/Desktop/data/result");
+	Archiver arch;
+	arch.addFile("C:/Users/Nikita/Desktop/data/y.mp4");
+	arch.compress();
+	arch.save("C:/Users/Nikita/Desktop/data/result_");
 
-	RLEencoder rlen;
-	FileLoader fl("C:/Users/Nikita/Desktop/data/resultbd.pdf");
-	std::string afterEncoding = rlen.encode(fl.getData());
-	std::ofstream ofs("C:/Users/Nikita/Desktop/data/resultbaafterencoding", std::ios::binary);
-	ofs << afterEncoding;
+	//FileLoader fl("C:/Users/Nikita/Desktop/data/result_text.txt");
 
+	//std::cout << fl.getData();
+
+	//RLEencoder rlen;
+	
+	//std::string afterEncoding = rlen.encode(fl.getData());
+	//std::ofstream ofs("C:/Users/Nikita/Desktop/data/resultbaafterencoding", std::ios::binary);
+	//ofs << afterEncoding;
+	//
 	//std::cout << (int)getLenghtAndIsSimilar( getSignByte(false, 89)).first;
 
 	
