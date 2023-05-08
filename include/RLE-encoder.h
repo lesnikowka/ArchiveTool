@@ -11,8 +11,6 @@ public:
 		for (unsigned i = 0; i < data.size(); i++) {
 			info = getLenghtAndIsSimilar(data[i]);
 
-			std::cout << encodedData.size() <<" " <<(int) info.first <<" " << info.second << " " << std::endl;
-
 			if (info.first) {
 				addSimilarSequence(encodedData, data[i + 1], info.second);
 				i++;
@@ -33,7 +31,7 @@ private:
 		return std::make_pair(s, (c >> 1));
 	}
 
-	void addSimilarSequence(std::string& s, char c, unsigned n) {
+	void addSimilarSequence(std::string& s, unsigned char c, unsigned n) {
 		for (unsigned i = 0; i < n; i++) {
 			s += c;
 		}

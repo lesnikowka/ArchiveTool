@@ -11,7 +11,7 @@ public:
 		
 		
 		std::string result;
-		int maxs = 100;
+		
 		
 		if (data.size() > 3) {
 		
@@ -20,14 +20,13 @@ public:
 			int start = 0;
 		
 			for (int i = 0; i < data.size() - 1; i++) {
-				if (i - start > 126) {
-        result += getSignByte(similar, i - start);
+				if (i - start > 125) {
+					result += getSignByte(similar, i - start);
 					if (similar) {
 						result += data[i - 1];
 					}
 					else {
-						result += data.substr(start, i - start - 1);
-						
+						result += data.substr(start, i - start);
 					}
 					start = i;
 				}
@@ -46,7 +45,12 @@ public:
 			}
 		
 			result += getSignByte(similar, data.size() - start);
-			result += data.substr(start, data.size() - start - 1);
+			if (similar) {
+				result += data[start];
+			}
+			else {
+				result += data.substr(start, data.size() - start);
+			}
 		}
 		
 		processedData = std::move(result);
@@ -61,9 +65,15 @@ private:
 	unsigned char getSignByte(bool isSimilarSequence, int lenght) {
 		assert(lenght <= 127 && lenght >=0);
 
-		unsigned char result = isSimilarSequence;
 
-		result += (lenght << 1);
+		unsigned char result = lenght;
+
+		result = result << 1;
+
+		result += (int)isSimilarSequence;
+		//
+		//unsigned char result = isSimilarSequence;
+		//result += (lenght << 1);
 
 		return result;
 	}
