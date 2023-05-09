@@ -35,9 +35,8 @@ public:
 	}
 	
 	void addFile(const std::string& directory) {
-		files.push_back(loadFile(directory))
+		files.push_back(loadFile(directory));
 	}
-
 
 	void compress() {
 		RLE rle;

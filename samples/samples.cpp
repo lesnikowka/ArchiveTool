@@ -19,7 +19,7 @@ std::pair<bool, unsigned> getLenghtAndIsSimilar(unsigned char c) {
 }
 
 int main() {
-	std::string filename = "mir.txt";
+	std::string filename = "img.bmp";
 	Archiver arch;
 	arch.addFile("C:/Users/Nikita/Desktop/data/"+filename);
 	arch.compress();

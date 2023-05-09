@@ -10,6 +10,8 @@ struct File {
 	std::string data;
 	std::string directory;
 
+	File() = default;
+
 	File(const std::string& data_, std::string directory_) : data(data_), directory(directory_) {}
 
 	File(std::string&& data_, std::string directory_) : data(data_), directory(directory_) {}
