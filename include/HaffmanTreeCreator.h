@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <iostream>
 
 class HaffmanTreeCreator {
 public:
@@ -23,9 +24,11 @@ public:
 		}
 	};
 
+
+
 	class HeapComparator {
 	public:
-		bool operator()(const std::pair<unsigned char, int>& p1, const std::pair<unsigned char, int>& p2) {
+		bool operator()(const std::pair<std::string, int>& p1, const std::pair<std::string, int>& p2) {
 			return p1.second > p2.second;
 		}
 	};
@@ -33,22 +36,24 @@ public:
 	std::vector<std::vector<bool>> createCodes(const std::vector<int> frequency) {
 		HeapComparator hp;
 
-		std::priority_queue<std::pair<unsigned char, int>,
+		std::priority_queue<std::pair<std::string, int>,
 			std::vector<std::pair<std::string, int>>, HeapComparator> pq(hp);
-
+		
 		for (int i = 0; i < frequency.size(); i++) {
-			pq.push(std::make_pair(std::to_string((unsigned char)i), frequency[i]));
+			if (frequency[i]) {
+				pq.push(std::make_pair(std::string(1,(char)i), frequency[i]));
+			}
 		}
-
+		
 		std::pair<std::string, int> min1, min2;
-
+		
 		while (pq.size() >= 2) {
 			min1 = pq.top();
 			pq.pop();
 			min2 = pq.top();
 			pq.pop();
 			pq.push(std::make_pair(min1.first + min2.first, min1.second + min2.second));
-			addUnit(pq.top().first, min1.first, min2.first);
+			addUnit(min1.first, min2.first);
 		}
 
 		std::vector<std::vector<bool>> result(256);
@@ -68,28 +73,34 @@ private:
 	std::list<HaffmanNode*> roots;
 
 	void fillCodes(std::vector<std::pair<std::vector<bool>, unsigned char>>& codes, std::vector<bool> current_code, HaffmanNode* n, bool direction){
+		if (!n) return;
 		current_code.push_back(direction);
-		if (!n->left) {
+		if (!n->left || !n->right) {
 			codes.push_back(std::make_pair(current_code, n->name[0]));
+			return;
 		}
 		fillCodes(codes, current_code, n->left, false);
 		fillCodes(codes, current_code, n->right, true);
 	}
 
-	void addUnit(const std::string& merged, const std::string& lpart, const std::string& rpart) {
-		HaffmanNode* newNode = new HaffmanNode;
+	void addUnit(const std::string& lpart, const std::string& rpart) {
+		HaffmanNode* newNode = new HaffmanNode(lpart + rpart);
 
-		for (auto root = begin(roots); root != end(roots); ++root) {
+		auto root = roots.begin();
+		while (root != roots.end()){
 			if (newNode->left && newNode->right) {
 				break;
 			}
-			if (newNode->left && lpart == (*root)->name) {
+			if (lpart == (*root)->name) {
 				newNode->left = *root;
 				root = roots.erase(root);
 			}
-			else if (newNode->right && rpart == (*root)->name) {
+			else if (rpart == (*root)->name) {
 				newNode->right = *root;
 				root = roots.erase(root);
+			}
+			else {
+				++root;
 			}
 		}
 		if (!newNode->left) {

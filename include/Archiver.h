@@ -3,6 +3,7 @@
 #include "File.h"
 #include "RLE.h"
 #include <list>
+#include "Haffman.h"
 
 class Archiver {
 public:
