@@ -19,7 +19,7 @@ public:
 		}
 	}
 
-	std::string encode(const std::string& data)  {
+	TBitField encode(const std::string& data)  {
 		HaffmanTreeCreator hc;
 		std::vector<int> freq = collectFrequency(data);
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
@@ -31,14 +31,12 @@ public:
 			sizeOfCompressedData += codes[i].size() * freq[i];
 		}
 
-		//std::vector<bool> compressedData(sizeOfCompressedData);
 		TBitField tf(sizeOfCompressedData);
 
 		size_t i = 0;
 		for (unsigned char c : data) {
 			size_t j = 0;
 			for (; j < codes[c].size(); j++) {
-				//compressedData[i + j] = codes[c][j];
 				if (codes[c][j]) {
 					tf.SetBit(i + j);
 				}
@@ -46,54 +44,7 @@ public:
 			i += j;
 		}
 
-		std::string result;
-		//if (compressedData.size() % 8 == 0) {
-		if (tf.GetLength() % 8 == 0){
-			//result.resize(compressedData.size() / 8);
-			result.resize(tf.GetLength() / 8);
-			
-		}
-		else {
-			//result.resize(compressedData.size() / 8 + 1);
-			result.resize(tf.GetLength() / 8 + 1);
-		}
-		
-
-		unsigned char cur_char = 0;
-		int deg = 7;
-		size_t result_counter = 0;
-
-		//for (size_t i = 0; i < compressedData.size(); i++) {
-		//	cur_char += (((unsigned char)compressedData[i]) << deg);
-		//
-		//	if (deg > 0) {
-		//		deg--;
-		//	}
-		//	else {
-		//		deg = 7;
-		//		result[result_counter] = cur_char;
-		//		result_counter++;
-		//		cur_char = 0;
-		//	}
-		//}
-
-		for (size_t i = 0; i < tf.GetLength(); i++) {
-			cur_char += (((unsigned char)tf.GetBit(i)) << deg);
-		
-			if (deg > 0) {
-				deg--;
-			}
-			else {
-				deg = 7;
-				result[result_counter] = cur_char;
-				result_counter++;
-				cur_char = 0;
-			}
-		}
-
-		if (deg < 7) result[result_counter] = cur_char;
-
-		return result;
+		return tf;
 	}
 
 	std::string decode(const std::string& data)  {

@@ -36,6 +36,13 @@ TBitField::TBitField(TBitField&& bf)
     std::swap(pMem, bf.pMem);
 }
 
+TBitField::TBitField(TELEM* mem, int memLen, int bitLen) {
+    MemLen = memLen;
+    BitLen = bitLen;
+    pMem = new TELEM[MemLen];
+    memcpy(pMem, mem, memLen);
+}
+
 TBitField::~TBitField()
 {
     delete[] pMem;
@@ -54,6 +61,10 @@ TELEM TBitField::GetMemMask(const int n) const noexcept
 int TBitField::GetLength(void) const noexcept 
 {
   return BitLen;
+}
+
+int TBitField::GetCapacity(void) const noexcept {
+    return MemLen;
 }
 
 void TBitField::SetBit(const int n) 
@@ -89,7 +100,9 @@ int TBitField::GetBit(const int n) const
 
 }
 
-
+const TELEM& TBitField::operator[](size_t i) const {
+    return pMem[i];
+}
 
 TBitField& TBitField::operator=(const TBitField& bf) 
 {

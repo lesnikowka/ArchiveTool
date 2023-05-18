@@ -20,25 +20,35 @@ std::pair<bool, unsigned> getLenghtAndIsSimilar(unsigned char c) {
 	return std::make_pair(s, (c >> 1));
 }
 
+class T {
+	char* mem;
+public:
+	T() {
+		mem = new char[10];
+	}
+	const char& operator[](int i) const{
+		return mem[i];
+	}
+};
+
 int main() {
+	std::string curdir = "C:/Users/Nikita/Desktop/data/";
 	std::string filename = "mir.txt";
 	//Archiver arch;
 	//arch.addFile("C:/Users/Nikita/Desktop/data/"+filename);
 	//arch.compress();
 	//arch.save("C:/Users/Nikita/Desktop/data/result_");
 	
-	File fl;
-	fl.data = loadData("C:/Users/Nikita/Desktop/data/" + filename);
-	fl.directory = "C:/Users/Nikita/Desktop/data/" + filename;
+	File<std::string> fl;
+	fl.data = loadData(curdir + filename);
+	fl.directory = curdir + filename;
 	
 	Haffman h;
-	
-	std::ofstream ofs("C:/Users/Nikita/Desktop/data/after_encoding" + filename, std::ios::binary);
-	
-	ofs << h.encode(fl.data);
 
-	ofs.close();
+	File<TBitField> fo(h.encode(fl.data), curdir + filename);
 	
+	saveFile(fo, curdir + "result_");
 	
+
 
 }

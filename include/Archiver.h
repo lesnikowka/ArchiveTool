@@ -40,15 +40,18 @@ public:
 	}
 
 	void compress() {
-		RLE rle;
-
-		for (const File& fl : files) {
-			compressedFiles.push_back(File(rle.encode(fl.data), fl.directory));
-		}
+		//RLE rle;
+		//
+		//for (const File& fl : files) {
+		//	compressedFiles.push_back(File(rle.encode(fl.data), fl.directory));
+		//}
 	}
 
 	void save(const std::string& outputDir) {
-		for (const File& fl: compressedFiles) {
+		for (const File<std::string>& fl: compressedFiles) {
+			saveFile(fl, outputDir);
+		}
+		for (const File<TBitField>& fl : compressedFilesBinary) {
 			saveFile(fl, outputDir);
 		}
 	}
@@ -58,6 +61,7 @@ public:
 		compressedFiles.clear();
 	}
 private:
-	std::list<File> files;
-	std::list<File> compressedFiles;
+	std::list<File<std::string>> files;
+	std::list<File<std::string>> compressedFiles;
+	std::list<File<TBitField>> compressedFilesBinary;
 };

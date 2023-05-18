@@ -22,10 +22,12 @@ public:
   TBitField(int len);                      
   TBitField(const TBitField &bf);          
   TBitField(TBitField &&bf);          
+  TBitField(TELEM* mem, int MemLen, int BitLen);          
   ~TBitField();
 												
   				
   int GetLength(void) const noexcept;  
+  int GetCapacity(void) const noexcept;  
   void SetBit(const int n);       
   void ClrBit(const int n);       
   int  GetBit(const int n) const; 
@@ -39,10 +41,8 @@ public:
   TBitField  operator&(const TBitField &bf);
   TBitField  operator~(void);
 
-  TELEM& operator[](size_t i) {
-	  return pMem[i];
-  }
-													
+  const TELEM& operator[](size_t i) const;
+
   friend istream &operator>>(istream &istr, TBitField &bf);       
   friend ostream &operator<<(ostream &ostr, const TBitField &bf); 
 };
