@@ -35,6 +35,7 @@ public:
 
 	std::vector<std::vector<bool>> createCodes(const std::vector<int> frequency) {
 		HeapComparator hp;
+		std::vector<std::vector<bool>> result(256);
 
 		std::priority_queue<std::pair<std::string, int>,
 			std::vector<std::pair<std::string, int>>, HeapComparator> pq(hp);
@@ -43,6 +44,14 @@ public:
 			if (frequency[i]) {
 				pq.push(std::make_pair(std::string(1,(char)i), frequency[i]));
 			}
+		}
+
+		if (!pq.size()) {
+			return result;
+		}
+		else if (pq.size() == 1) {
+			result[pq.top().first[0]] = std::vector<bool>({ 0 });
+			return result;
 		}
 		
 		std::pair<std::string, int> min1, min2;
@@ -56,7 +65,6 @@ public:
 			addUnit(min1.first, min2.first);
 		}
 
-		std::vector<std::vector<bool>> result(256);
 		std::vector<std::pair<std::vector<bool>, unsigned char>> codes;
 
 		fillCodes(codes, std::vector<bool>(), roots.front()->left, false);

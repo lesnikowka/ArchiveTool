@@ -37,7 +37,11 @@ public:
   TBitField& operator=(TBitField &&bf);
   TBitField  operator|(const TBitField &bf);
   TBitField  operator&(const TBitField &bf);
-  TBitField  operator~(void);               
+  TBitField  operator~(void);
+
+  TELEM& operator[](size_t i) {
+	  return pMem[i];
+  }
 													
   friend istream &operator>>(istream &istr, TBitField &bf);       
   friend ostream &operator<<(ostream &ostr, const TBitField &bf); 

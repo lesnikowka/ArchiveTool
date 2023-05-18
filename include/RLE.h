@@ -2,13 +2,13 @@
 
 #include <string>
 #include <cassert>
-#include "CompressionAlgorithm.h"
 
-class RLE : public CompressionAlgorithm {
+
+class RLE {
 public:
 	RLE() = default;
 	
-	std::string encode(const std::string& data) override{
+	std::string encode(const std::string& data) {
 		
 		
 		std::string result;
@@ -57,7 +57,7 @@ public:
 		return result;
 	}
 
-	std::string decode(const std::string& data) override {
+	std::string decode(const std::string& data)  {
 		std::string encodedData;
 
 		std::pair<bool, unsigned> info;
