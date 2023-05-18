@@ -40,11 +40,10 @@ public:
 	}
 
 	void compress() {
-		//RLE rle;
-		//
-		//for (const File& fl : files) {
-		//	compressedFiles.push_back(File(rle.encode(fl.data), fl.directory));
-		//}
+		Haffman h;
+		for (File<std::string> f : files) {
+			compressedFilesBinary.push_back(File<TBitField>(h.encode(f.data), f.directory));
+		}
 	}
 
 	void save(const std::string& outputDir) {
@@ -59,6 +58,7 @@ public:
 	void clear() {
 		files.clear();
 		compressedFiles.clear();
+		compressedFilesBinary.clear();
 	}
 private:
 	std::list<File<std::string>> files;

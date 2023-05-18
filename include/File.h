@@ -14,9 +14,28 @@ struct File {
 
 	File() = default;
 
-	File(const ContainerType& data_, std::string directory_) : data(data_), directory(directory_) {}
+	File(const ContainerType& data_, std::string directory_) : 
+		data(data_), 
+		directory(directory_) {}
 
-	File(ContainerType&& data_, std::string directory_) : data(data_), directory(directory_) {}
+	File(ContainerType&& data_, std::string directory_) : 
+		data(data_), 
+		directory(directory_) {}
+
+	File(const File& file) : 
+		data(file.data),
+		directory(file.directory) {}
+		 
+	File& operator=(const File& file) {
+		data = file.data;
+		directory = file.directory;
+	}
+
+	File& operator=(File&& file) {
+		data = std::move(file.data);
+		directory = std::move(file.directory);
+	}
+
 };
 
 std::string loadData(const std::string& dir) {
@@ -45,12 +64,22 @@ File<std::string> loadFile(const std::string& dir) {
 }
 
 File<TBitField> loadBinaryFile(const std::string& dir) {
-	
 	char* buf;
+	int size;
+	std::ifstream ifs;
 
+	ifs.open(dir);
+	ifs.seekg(0, std::ios::end);
 
-
+	size = ifs.tellg();
 	
+	ifs.seekg(0, std::ios::beg);
+	buf = new char[size];
+	
+	ifs.read(buf, size);
+	ifs.close();
+
+	return File<TBitField>(TBitField((unsigned char*)buf, size, size * 8), dir);
 }
 
 std::string getName(std::string directory) {

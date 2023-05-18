@@ -23,7 +23,6 @@ public:
 		HaffmanTreeCreator hc;
 		std::vector<int> freq = collectFrequency(data);
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
-		//printCodes(codes);
 
 		size_t sizeOfCompressedData = 0;
 
@@ -31,20 +30,20 @@ public:
 			sizeOfCompressedData += codes[i].size() * freq[i];
 		}
 
-		TBitField tf(sizeOfCompressedData);
+		TBitField CompressedData(sizeOfCompressedData);
 
 		size_t i = 0;
 		for (unsigned char c : data) {
 			size_t j = 0;
 			for (; j < codes[c].size(); j++) {
 				if (codes[c][j]) {
-					tf.SetBit(i + j);
+					CompressedData.SetBit(i + j);
 				}
 			}
 			i += j;
 		}
 
-		return tf;
+		return CompressedData;
 	}
 
 	std::string decode(const std::string& data)  {
