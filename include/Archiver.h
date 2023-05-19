@@ -5,16 +5,19 @@
 #include <list>
 #include "Haffman.h"
 
+
+const std::string HAFFMAN_ARCHIVE_EXTENSION = ".haff";
+const std::string RLE_ARCHIVE_EXTENSION = ".rle";
+
+
+
 template <class CompressingStrategy>
 class Archiver {
 };
 
 
-
-
 template<>
 class Archiver<RLE> {
-	const std::string ARCHIVE_EXTENSION = ".rle";
 public:
 	Archiver() = default;
 
@@ -61,7 +64,7 @@ public:
 
 	void save(const std::string & outputDir) {
 		for (const File<std::string>& fl: compressedFiles) {
-			saveFile(fl, outputDir, ARCHIVE_EXTENSION);
+			saveFile(fl, outputDir, RLE_ARCHIVE_EXTENSION);
 		}
 	}
 
@@ -79,7 +82,6 @@ private:
 
 template<>
 class Archiver<Haffman> {
-	const std::string ARCHIVE_EXTENSION = ".haff";
 public:
 	Archiver() = default;
 
@@ -126,7 +128,7 @@ public:
 
 	void save(const std::string& outputDir) {
 		for (const File<TBitField>& fl : compressedFiles) {
-			saveFile(fl, outputDir, ARCHIVE_EXTENSION);
+			saveFile(fl, outputDir, HAFFMAN_ARCHIVE_EXTENSION);
 		}
 	}
 

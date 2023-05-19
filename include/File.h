@@ -88,6 +88,7 @@ File<TBitField> loadBinaryFile(const std::string& dir) {
 }
 
 std::string getName(std::string directory) {
+
 	int leftBound = directory.rfind('/');
 
 	if (leftBound == std::string::npos) {
@@ -102,6 +103,8 @@ std::string getName(std::string directory) {
 
 void saveFile(const File<std::string>& fl, const std::string& outputDir, const std::string& extension = "") {
 	std::ofstream ofs(outputDir + getName(fl.directory) + extension, ios::binary);
+
+
 	if (ofs.is_open()) {
 		ofs << fl.data;
 	}

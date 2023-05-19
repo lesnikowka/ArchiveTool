@@ -9,7 +9,7 @@ int main() {
 	
 	std::string curdir = "C:/Users/Nikita/Desktop/data/";
 
-	Archiver<Haffman> arch;
+	Archiver<RLE> arch;
 
 
 	arch.addFile(curdir + "mir.txt");
@@ -25,11 +25,11 @@ int main() {
 
 	arch.save(curdir + "c/");
 
-	Unpacker<Haffman> unp;
+	Unpacker<RLE> unp;
 	
-	unp.addFile(curdir + "c/mir.txt.haff");
-	//unp.addFile(curdir + "c/ar.pdf.haff");
-	//unp.addFile(curdir + "c/test.docx.haff");
+	unp.addFile(curdir + "c/mir.txt.rle");
+	unp.addFile(curdir + "c/ar.pdf.rle");
+	unp.addFile(curdir + "c/test.docx.rle");
 	//
 	unp.unpack();
 	//
