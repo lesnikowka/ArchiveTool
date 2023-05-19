@@ -5,6 +5,10 @@
 #include <unordered_map>
 #include <numeric>
 
+std::vector<std::vector<bool>> CODES;
+std::vector<size_t> FREQ;
+TBitField tb(0);
+
 class Haffman {
 	const size_t SIZE_OF_SERVICE_INFO = 16448;
 public:
@@ -13,7 +17,7 @@ public:
 	void printCodes(std::vector<std::vector<bool>> v) {
 		for (int i = 0; i < v.size(); i++) {
 			if (v[i].size()) {
-				std::cout << (char)i << ": ";
+				std::cout << (unsigned char)i << ": ";
 				for (auto e : v[i]) {
 					std::cout << e;
 				}
@@ -26,27 +30,20 @@ public:
 		HaffmanTreeCreator hc;
 		std::vector<size_t> freq = collectFrequency(data);
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
+		CODES = codes;
+		FREQ = freq;
+		//printCodes(codes);
 
 		size_t sizeOfCompressedData = getSizeOfCompressedData(codes, freq);
-
 		TBitField CompressedData(sizeOfCompressedData + SIZE_OF_SERVICE_INFO);
+
+
+		std::cout << sizeOfCompressedData << std::endl;
 
 		writeValueInBitField(CompressedData, sizeOfCompressedData, 0);
 
-
-
-		//int a = sizeOfCompressedData;
-		//int b = getValueFromBitField<size_t>(CompressedData, 0);
-		int d;
-
-		for (size_t i = 97; i < freq.size(); i++){
-			d = i;
-			try {
-				writeValueInBitField(CompressedData, freq[i], sizeof(size_t) * 8 * (1 + i));
-			}
-			catch (std::exception ex) {
-				std::cout << freq[d];
-			}
+		for (size_t i = 0; i < freq.size(); i++){
+			writeValueInBitField(CompressedData, freq[i], sizeof(size_t) * 8 * (1 + i));
 		}
 
 		size_t i = SIZE_OF_SERVICE_INFO;
@@ -59,51 +56,61 @@ public:
 			}
 			i += j;
 		}
+		tb = CompressedData;
 
 		return CompressedData;
 	}
 
-	std::string decode(const TBitField& tf)  {
+	std::string decode(const TBitField& t)  {
+		TBitField tf = tb;
 		if (tf.GetLength() == 0) {
 			throw std::invalid_argument("Data is empty");
 		}
 
 		size_t sizeOfCompressedData = getValueFromBitField<size_t>(tf, 0);
 
+		std::cout << sizeOfCompressedData << std::endl;
+
 		std::vector<size_t> freq(256);
 
-		for (size_t i = sizeof(size_t) * 8; i < SIZE_OF_SERVICE_INFO; i += sizeof(size_t) * 8) {
-			freq[(i - sizeof(size_t))/8] = getValueFromBitField<size_t>(tf, i);
+		size_t bitsize = sizeof(size_t) * 8;
+
+		for (size_t i = bitsize; i < SIZE_OF_SERVICE_INFO; i += bitsize) {
+			size_t aa = getValueFromBitField<size_t>(tf, i);
+			//std::cout << (i - bitsize) / bitsize << std::endl;
+			freq[(i - bitsize) / bitsize] = getValueFromBitField<size_t>(tf, i);	
 		}
+
+		//freq = FREQ;
 
 		std::string decompressedData;
 
 
-		size_t a = std::accumulate(freq.begin(), freq.end(), 0);
-
-
-		decompressedData.resize(a);
-
 		HaffmanTreeCreator hc;
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
 
-		//printCodes(codes);
+		bool b = codes == CODES;
+		bool c = FREQ == freq;
+
+		for (int i = 0; i < freq.size(); i++) {
+			std::cout <<"freqs: " << FREQ[i] << " " << freq[i] << std::endl;
+		}
 
 		std::unordered_map<std::string, unsigned char> mp;
 
 		for (size_t i = 0; i < codes.size(); i++) {
-			mp.emplace(boolVectorToString(codes[i]), (unsigned char)i);
+			if (codes[i].size()) {
+				mp.emplace(boolVectorToString(codes[i]), (unsigned char)i);
+			}
 		}
 
 		std::string current_code = "";
-		size_t deCompressedDataIt = 0;
 
-		for (size_t i = SIZE_OF_SERVICE_INFO; i < tf.GetLength(); i++) {
-			current_code += tf.GetBit(i);
+		for (size_t i = SIZE_OF_SERVICE_INFO; i < SIZE_OF_SERVICE_INFO + sizeOfCompressedData; i++) {
+			current_code += (unsigned char)tf.GetBit(i);
 			auto mp_it = mp.find(current_code);
 			if (mp_it != mp.end()) {
-				decompressedData[deCompressedDataIt] = (*mp_it).second;
-				deCompressedDataIt++;
+				decompressedData += (unsigned char)(*mp_it).second;
 				current_code.clear();
 			}
 		}
@@ -153,7 +160,7 @@ private:
 		size_t bitsize = sizeof(T) * 8;
 		T val = 0;
 
-		int deg = sizeof(T) * 8 - 1;
+		int deg = bitsize - 1;
 		for (size_t i = start; i < start + bitsize; i++) {
 			if (tf.GetBit(i)) {
 				val += 1 << deg;

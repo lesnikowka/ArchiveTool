@@ -75,6 +75,8 @@ File<TBitField> loadBinaryFile(const std::string& dir) {
 	
 	ifs.seekg(0, std::ios::beg);
 	buf = new char[size];
+
+	std::cout << "\n\n\nLENGHT:   \n\n\n" << size << std::endl << std::endl << std::endl << std::endl << std::endl;
 	
 	ifs.read(buf, size);
 	ifs.close();
