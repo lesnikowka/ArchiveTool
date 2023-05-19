@@ -46,11 +46,9 @@ int main() {
 	File<TBitField> fb(encoded, curdir + filename);
 	saveFile(fb, curdir + "result_");
 	
-	std::string filename2 = "result_mir.txt";
+	std::string filename2 = "result_"+filename;
 	
 	File<TBitField> fu = loadBinaryFile(curdir + filename2);
-
-	//bool b = fu.data == encoded;
 	
 	File<std::string> fo(h.decode(fu.data), curdir + filename2);
 	

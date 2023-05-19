@@ -66,9 +66,8 @@ File<std::string> loadFile(const std::string& dir) {
 File<TBitField> loadBinaryFile(const std::string& dir) {
 	char* buf;
 	int size;
-	std::ifstream ifs;
+	std::ifstream ifs(dir, std::ios::binary);
 	
-	ifs.open(dir, std::ios::binary);
 	ifs.seekg(0, std::ios::end);
 	
 	size = ifs.tellg();
@@ -111,9 +110,7 @@ void saveFile(const File<TBitField> fl, const std::string& outputDir) {
 	std::ofstream ofs(outputDir + getName(fl.directory), std::ios::binary);
 
 	if (ofs.is_open()) {
-		//ofs.write((const char*)&(fl.data[0]), fl.data.GetCapacity());
-		std::string data((const char*)(&fl.data[0]));
-		ofs << data;
+		ofs.write((const char*)&(fl.data[0]), fl.data.GetCapacity());
 	}
 	else {
 		throw std::invalid_argument("File was not opened");

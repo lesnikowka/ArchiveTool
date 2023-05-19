@@ -5,10 +5,6 @@
 #include <unordered_map>
 #include <numeric>
 
-std::vector<std::vector<bool>> CODES;
-std::vector<size_t> FREQ;
-TBitField tb(0);
-
 class Haffman {
 	const size_t SIZE_OF_SERVICE_INFO = 16448;
 public:
@@ -32,10 +28,8 @@ public:
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
 
 		size_t sizeOfCompressedData = getSizeOfCompressedData(codes, freq);
+
 		TBitField CompressedData(sizeOfCompressedData + SIZE_OF_SERVICE_INFO);
-
-
-		std::cout << sizeOfCompressedData << std::endl;
 
 		writeValueInBitField(CompressedData, sizeOfCompressedData, 0);
 
@@ -53,31 +47,22 @@ public:
 			}
 			i += j;
 		}
-		tb = CompressedData;
 
 		return CompressedData;
 	}
 
-	std::string decode(const TBitField& t)  {
-		TBitField tf = tb;
+	std::string decode(const TBitField& tf)  {
 		if (tf.GetLength() == 0) {
 			throw std::invalid_argument("Data is empty");
 		}
 
+		std::vector<size_t> freq = loadFreq(tf);
+
 		size_t sizeOfCompressedData = getValueFromBitField<size_t>(tf, 0);
-
-		std::cout << sizeOfCompressedData << std::endl;
-
-		std::vector<size_t> freq(256);
-
-		size_t bitsize = sizeof(size_t) * 8;
-
-		for (size_t i = bitsize; i < SIZE_OF_SERVICE_INFO; i += bitsize) {
-			size_t aa = getValueFromBitField<size_t>(tf, i);
-			freq[(i - bitsize) / bitsize] = getValueFromBitField<size_t>(tf, i);	
-		}
+		size_t sizeOfDecompressedData = getSizeOfDecompressedData(freq);
 
 		std::string decompressedData;
+		decompressedData.resize(sizeOfDecompressedData);
 
 
 		HaffmanTreeCreator hc;
@@ -92,13 +77,16 @@ public:
 		}
 
 		std::string current_code = "";
+		size_t decompressedDataIt = 0;
 
 		for (size_t i = SIZE_OF_SERVICE_INFO; i < SIZE_OF_SERVICE_INFO + sizeOfCompressedData; i++) {
 			current_code += (unsigned char)tf.GetBit(i);
 			auto mp_it = mp.find(current_code);
+
 			if (mp_it != mp.end()) {
-				decompressedData += (unsigned char)(*mp_it).second;
+				decompressedData[decompressedDataIt] = (unsigned char)(*mp_it).second;
 				current_code.clear();
+				decompressedDataIt++;
 			}
 		}
 
@@ -169,5 +157,21 @@ private:
 		return result;
 	}
 
-	
+	std::vector<size_t> loadFreq(const TBitField& tf) {
+		std::vector<size_t> freq(256);
+
+		size_t bitsize = sizeof(size_t) * 8;
+
+		for (size_t i = bitsize; i < SIZE_OF_SERVICE_INFO; i += bitsize) {
+			freq[(i - bitsize) / bitsize] = getValueFromBitField<size_t>(tf, i);
+		}
+
+		return freq;
+	}
+
+	size_t getSizeOfDecompressedData(const std::vector<size_t> freq) {
+		size_t size = std::accumulate(freq.begin(), freq.end(), 0);
+
+		return size;
+	}
 };
