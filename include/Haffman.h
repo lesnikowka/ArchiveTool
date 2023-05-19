@@ -6,7 +6,7 @@
 #include <numeric>
 
 class Haffman {
-	const size_t SIZE_OF_SERVICE_INFO = 2056;
+	const size_t SIZE_OF_SERVICE_INFO = 16448;
 public:
 	Haffman() = default;
 
@@ -33,11 +33,20 @@ public:
 
 		writeValueInBitField(CompressedData, sizeOfCompressedData, 0);
 
-		int a = sizeOfCompressedData;
-		int b = getValueFromBitField<size_t>(CompressedData, 0);
 
-		for (size_t i = 0; i < freq.size(); i++){
-			writeValueInBitField(CompressedData, freq[i], sizeof(size_t) * 8 * (1 + i));
+
+		//int a = sizeOfCompressedData;
+		//int b = getValueFromBitField<size_t>(CompressedData, 0);
+		int d;
+
+		for (size_t i = 97; i < freq.size(); i++){
+			d = i;
+			try {
+				writeValueInBitField(CompressedData, freq[i], sizeof(size_t) * 8 * (1 + i));
+			}
+			catch (std::exception ex) {
+				std::cout << freq[d];
+			}
 		}
 
 		size_t i = SIZE_OF_SERVICE_INFO;
@@ -90,13 +99,13 @@ public:
 		size_t deCompressedDataIt = 0;
 
 		for (size_t i = SIZE_OF_SERVICE_INFO; i < tf.GetLength(); i++) {
-			//current_code += tf.GetBit(i);
-			//auto mp_it = mp.find(current_code);
-			//if (mp_it != mp.end()) {
-			//	decompressedData[deCompressedDataIt] = (*mp_it).second;
-			//	deCompressedDataIt++;
-			//	current_code.clear();
-			//}
+			current_code += tf.GetBit(i);
+			auto mp_it = mp.find(current_code);
+			if (mp_it != mp.end()) {
+				decompressedData[deCompressedDataIt] = (*mp_it).second;
+				deCompressedDataIt++;
+				current_code.clear();
+			}
 		}
 
 		return decompressedData;
@@ -144,7 +153,7 @@ private:
 		size_t bitsize = sizeof(T) * 8;
 		T val = 0;
 
-		int deg = sizeof(T) - 1;
+		int deg = sizeof(T) * 8 - 1;
 		for (size_t i = start; i < start + bitsize; i++) {
 			if (tf.GetBit(i)) {
 				val += 1 << deg;

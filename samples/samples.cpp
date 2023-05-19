@@ -40,18 +40,18 @@ int main() {
 	//arch.save("C:/Users/Nikita/Desktop/data/result_");
 	
 	Haffman h;
-
-	File<std::string> fl = loadFile(curdir + filename);
-	File<TBitField> fb(h.encode(fl.data), curdir + filename);
-	saveFile(fb, curdir + "result_");
+	//
+	//File<std::string> fl = loadFile(curdir + filename);
+	//File<TBitField> fb(h.encode(fl.data), curdir + filename);
+	//saveFile(fb, curdir + "result_");
 	
-	//File<TBitField> fu = loadBinaryFile(curdir + filename);
-	//
-	////std::string t = h.decode(fu.data);
-	//
-	//File<std::string> fo(h.decode(fu.data), curdir + filename);
-	//
-	//saveFile(fo, curdir + "after_decoding_");
+	File<TBitField> fu = loadBinaryFile(curdir + filename);
+	
+	//std::string t = h.decode(fu.data);
+	
+	File<std::string> fo(h.decode(fu.data), curdir + filename);
+	
+	saveFile(fo, curdir + "after_decoding_");
 
 	
 
