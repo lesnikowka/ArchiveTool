@@ -30,9 +30,6 @@ public:
 		HaffmanTreeCreator hc;
 		std::vector<size_t> freq = collectFrequency(data);
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
-		CODES = codes;
-		FREQ = freq;
-		//printCodes(codes);
 
 		size_t sizeOfCompressedData = getSizeOfCompressedData(codes, freq);
 		TBitField CompressedData(sizeOfCompressedData + SIZE_OF_SERVICE_INFO);
@@ -77,24 +74,14 @@ public:
 
 		for (size_t i = bitsize; i < SIZE_OF_SERVICE_INFO; i += bitsize) {
 			size_t aa = getValueFromBitField<size_t>(tf, i);
-			//std::cout << (i - bitsize) / bitsize << std::endl;
 			freq[(i - bitsize) / bitsize] = getValueFromBitField<size_t>(tf, i);	
 		}
-
-		//freq = FREQ;
 
 		std::string decompressedData;
 
 
 		HaffmanTreeCreator hc;
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
-
-		bool b = codes == CODES;
-		bool c = FREQ == freq;
-
-		for (int i = 0; i < freq.size(); i++) {
-			std::cout <<"freqs: " << FREQ[i] << " " << freq[i] << std::endl;
-		}
 
 		std::unordered_map<std::string, unsigned char> mp;
 

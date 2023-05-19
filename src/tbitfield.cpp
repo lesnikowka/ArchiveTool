@@ -36,7 +36,7 @@ TBitField::TBitField(TBitField&& bf)
     std::swap(pMem, bf.pMem);
 }
 
-TBitField::TBitField(TELEM* mem, int memLen, int bitLen) {
+TBitField::TBitField(const TELEM* mem, int memLen, int bitLen) {
     MemLen = memLen;
     BitLen = bitLen;
     pMem = new TELEM[MemLen];

@@ -22,7 +22,7 @@ public:
   TBitField(int len);                      
   TBitField(const TBitField &bf);          
   TBitField(TBitField &&bf);          
-  TBitField(TELEM* mem, int MemLen, int BitLen);          
+  TBitField(const TELEM* mem, int MemLen, int BitLen);          
   ~TBitField();
 												
   				
