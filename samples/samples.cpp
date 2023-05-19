@@ -33,7 +33,7 @@ public:
 
 int main() {
 	std::string curdir = "C:/Users/Nikita/Desktop/data/";
-	std::string filename = "mir.txt";
+	std::string filename = "result_mir.txt";
 	//Archiver arch;
 	//arch.addFile("C:/Users/Nikita/Desktop/data/"+filename);
 	//arch.compress();
@@ -42,12 +42,16 @@ int main() {
 	Haffman h;
 
 	File<std::string> fl = loadFile(curdir + filename);
-
 	File<TBitField> fb(h.encode(fl.data), curdir + filename);
-
 	saveFile(fb, curdir + "result_");
 	
-	
+	//File<TBitField> fu = loadBinaryFile(curdir + filename);
+	//
+	////std::string t = h.decode(fu.data);
+	//
+	//File<std::string> fo(h.decode(fu.data), curdir + filename);
+	//
+	//saveFile(fo, curdir + "after_decoding_");
 
 	
 
