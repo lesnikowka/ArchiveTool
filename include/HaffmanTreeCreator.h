@@ -28,17 +28,17 @@ public:
 
 	class HeapComparator {
 	public:
-		bool operator()(const std::pair<std::string, int>& p1, const std::pair<std::string, int>& p2) {
+		bool operator()(const std::pair<std::string, size_t>& p1, const std::pair<std::string, size_t>& p2) {
 			return p1.second > p2.second;
 		}
 	};
 
-	std::vector<std::vector<bool>> createCodes(const std::vector<int> frequency) {
+	std::vector<std::vector<bool>> createCodes(const std::vector<size_t> frequency) {
 		HeapComparator hp;
 		std::vector<std::vector<bool>> result(256);
 
-		std::priority_queue<std::pair<std::string, int>,
-			std::vector<std::pair<std::string, int>>, HeapComparator> pq(hp);
+		std::priority_queue<std::pair<std::string, size_t>,
+			std::vector<std::pair<std::string, size_t>>, HeapComparator> pq(hp);
 		
 		for (int i = 0; i < frequency.size(); i++) {
 			if (frequency[i]) {

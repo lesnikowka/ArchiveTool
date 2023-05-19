@@ -39,13 +39,16 @@ int main() {
 	//arch.compress();
 	//arch.save("C:/Users/Nikita/Desktop/data/result_");
 	
-	File<TBitField> fl = loadBinaryFile(curdir + filename);
-	
 	Haffman h;
 
-	//File<TBitField> fo(h.encode(fl.data), curdir + filename);
+	File<std::string> fl = loadFile(curdir + filename);
+
+	File<TBitField> fb(h.encode(fl.data), curdir + filename);
+
+	saveFile(fb, curdir + "result_");
 	
-	saveFile(fl, curdir + "result_");
+	
+
 	
 
 
