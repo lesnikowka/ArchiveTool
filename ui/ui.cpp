@@ -1,7 +1,6 @@
 #include "Archiver.h"
 #include "Unpacker.h"
 #include <iostream>
-#include <unordered_map>
 
 template<class T>
  bool AddFiles(T& arch, const std::vector<std::string>& directories, const std::string& outputDirectory) {
