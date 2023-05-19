@@ -6,4 +6,4 @@ file(GLOB srcs "*.cpp*")
 
 add_executable(${TARGET} ${srcs} ${hdrs})
 
-target_include_directories(${TARGET} PUBLIC ${MP_INCLUDE})
+target_link_libraries(${TARGET} ${MP_CUSTOM_PROJECT})

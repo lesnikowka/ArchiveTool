@@ -9,10 +9,7 @@ public:
 	RLE() = default;
 	
 	std::string encode(const std::string& data) {
-		
-		
 		std::string result;
-		
 		
 		if (data.size() > 3) {
 		

@@ -64,19 +64,25 @@ File<std::string> loadFile(const std::string& dir) {
 }
 
 File<TBitField> loadBinaryFile(const std::string& dir) {
-	char* buf;
-	int size;
+	char* buf =  nullptr;
+	int size = 0;
 	std::ifstream ifs(dir, std::ios::binary);
 	
-	ifs.seekg(0, std::ios::end);
-	
-	size = ifs.tellg();
-	
-	ifs.seekg(0, std::ios::beg);
-	buf = new char[size];
-	
-	ifs.read(buf, size);
-	ifs.close();
+	if (ifs.is_open()) {
+
+		ifs.seekg(0, std::ios::end);
+
+		size = ifs.tellg();
+
+		ifs.seekg(0, std::ios::beg);
+		buf = new char[size];
+
+		ifs.read(buf, size);
+		ifs.close();
+	}
+	else {
+		throw std::invalid_argument("File was not opened");
+	}
 	
 	return File<TBitField>(TBitField((unsigned char*)buf, size, size * 8), dir);
 }
@@ -94,8 +100,8 @@ std::string getName(std::string directory) {
 	return directory.substr(leftBound);
 }
 
-void saveFile(const File<std::string>& fl, const std::string& outputDir) {
-	std::ofstream ofs(outputDir + getName(fl.directory), ios::binary);
+void saveFile(const File<std::string>& fl, const std::string& outputDir, const std::string& extension = "") {
+	std::ofstream ofs(outputDir + getName(fl.directory) + extension, ios::binary);
 	if (ofs.is_open()) {
 		ofs << fl.data;
 	}
@@ -106,8 +112,8 @@ void saveFile(const File<std::string>& fl, const std::string& outputDir) {
 	ofs.close();
 }
 
-void saveFile(const File<TBitField> fl, const std::string& outputDir) {
-	std::ofstream ofs(outputDir + getName(fl.directory), std::ios::binary);
+void saveFile(const File<TBitField> fl, const std::string& outputDir, const std::string& extension = "") {
+	std::ofstream ofs(outputDir + getName(fl.directory) + extension, std::ios::binary);
 
 	if (ofs.is_open()) {
 		ofs.write((const char*)&(fl.data[0]), fl.data.GetCapacity());
