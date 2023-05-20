@@ -88,15 +88,9 @@ File<TBitField> loadBinaryFile(const std::string& dir) {
 }
 
 std::string getName(std::string directory) {
+	int leftBound = std::max((int)directory.rfind('/'), (int)directory.rfind('\\'));
 
-	int leftBound = directory.rfind('/');
-
-	if (leftBound == std::string::npos) {
-		leftBound = 0;
-	}
-	else {
-		leftBound++;
-	}
+	leftBound++;
 
 	return directory.substr(leftBound);
 }
