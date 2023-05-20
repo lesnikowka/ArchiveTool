@@ -1,19 +1,15 @@
 #include "tbitfield.h"
 
-TBitField::TBitField(int len)
+TBitField::TBitField(size_t len)
 {
-    if (len < 0) 
-        throw std::length_error("Size cannot be less than 0");
+    BitLen = len;
+    MemLen = len & (sizeof(TELEM)*8 - 1) ? len / (sizeof(TELEM) * 8) + 1 : len / (sizeof(TELEM) * 8);
 
-    else {
-        BitLen = len;
-        MemLen = len & (sizeof(TELEM)*8 - 1) ? len / (sizeof(TELEM) * 8) + 1 : len / (sizeof(TELEM) * 8);
+    pMem = new TELEM[MemLen];
 
-        pMem = new TELEM[MemLen];
-
-        for (int i = 0; i < MemLen; i++)
-            pMem[i] = 0;
-    }
+    for (int i = 0; i < MemLen; i++)
+        pMem[i] = 0;
+    
 }
 
 TBitField::TBitField(const TBitField &bf) 
@@ -36,7 +32,7 @@ TBitField::TBitField(TBitField&& bf)
     std::swap(pMem, bf.pMem);
 }
 
-TBitField::TBitField(const TELEM* mem, int memLen, int bitLen) {
+TBitField::TBitField(const TELEM* mem, size_t memLen, size_t bitLen) {
     MemLen = memLen;
     BitLen = bitLen;
     pMem = new TELEM[MemLen];
@@ -48,46 +44,46 @@ TBitField::~TBitField()
     delete[] pMem;
 }
 
-int TBitField::GetMemIndex(const int n) const noexcept 
+int TBitField::GetMemIndex(const size_t n) const noexcept
 {
     return n / (sizeof(TELEM) * 8);
 }
 
-TELEM TBitField::GetMemMask(const int n) const noexcept 
+TELEM TBitField::GetMemMask(const size_t n) const noexcept
 {
     return ((TELEM)1) << (n & (sizeof(TELEM) * 8 - 1));
 }
 
-int TBitField::GetLength(void) const noexcept 
+size_t TBitField::GetLength(void) const noexcept
 {
   return BitLen;
 }
 
-int TBitField::GetCapacity(void) const noexcept {
+size_t TBitField::GetCapacity(void) const noexcept {
     return MemLen;
 }
 
-void TBitField::SetBit(const int n) 
+void TBitField::SetBit(const size_t n)
 {
-    if (n < 0 || n >= BitLen) 
+    if (n >= BitLen) 
         throw std::out_of_range("index out of the bounds");
     
     else 
         pMem[GetMemIndex(n)] = pMem[GetMemIndex(n)] | GetMemMask(n);
 }
 
-void TBitField::ClrBit(const int n) 
+void TBitField::ClrBit(const size_t n)
 {
-    if (n < 0 || n >= BitLen) 
+    if (n >= BitLen) 
         throw std::out_of_range("index out of the bounds");
     
     else 
         pMem[GetMemIndex(n)] = pMem[GetMemIndex(n)] & (~GetMemMask(n));
 }
 
-int TBitField::GetBit(const int n) const 
+int TBitField::GetBit(const size_t n) const
 {
-    if (n < 0 || n >= BitLen) {
+    if (n >= BitLen) {
         throw std::exception("index out of the bounds");
 
         return 0;

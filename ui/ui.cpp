@@ -6,6 +6,7 @@
 
 
 int main(int argc, char **argv) {
+
 	ConsoleWindow* window = ConsoleWindow::getInstance();
 
 	window->Run(argc, argv);
