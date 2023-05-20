@@ -2,6 +2,7 @@ set(TARGET ui)
 project(${TARGET})
 
 file(GLOB srcs "*.cpp*")
+file(GLOB hdrs "*.h*")
 
 add_executable(${TARGET} ${srcs} ${hdrs})
 
