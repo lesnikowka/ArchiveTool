@@ -119,7 +119,7 @@ private:
 		}
 		catch (const std::exception& ex) {
 
-			std::cout << "Incorrect output directory (Maybe you should use '/' instead '\\' ever)" << std::endl;
+			std::cout << "Incorrect output directory" << std::endl;
 			return false;//
 		}
 
