@@ -79,7 +79,7 @@ public:
 		std::string current_code = "";
 		size_t decompressedDataIt = 0;
 
-		for (size_t i = SIZE_OF_SERVICE_INFO; i < SIZE_OF_SERVICE_INFO + sizeOfCompressedData; i++) {
+		for (size_t i = SIZE_OF_SERVICE_INFO; decompressedDataIt < sizeOfDecompressedData; i++){
 			current_code += (unsigned char)tf.GetBit(i);
 			auto mp_it = mp.find(current_code);
 
@@ -89,7 +89,7 @@ public:
 				decompressedDataIt++;
 			}
 		}
-
+		
 		return decompressedData;
 
 	}

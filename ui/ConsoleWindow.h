@@ -20,7 +20,6 @@ public:
 
 		std::string outputDirectory(argv[argc - 1]);
 
-
 		std::cout << "  1) Compressing\n  2) Unpacking\n";
 
 		int choicedAction = 0;
