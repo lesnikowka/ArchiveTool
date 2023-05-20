@@ -15,9 +15,11 @@ public:
 
 		for (int i = 1; i < argc - 1; i++) {
 			directories.push_back(argv[i]);
+			
 		}
 
 		std::string outputDirectory(argv[argc - 1]);
+
 
 		std::cout << "  1) Compressing\n  2) Unpacking\n";
 

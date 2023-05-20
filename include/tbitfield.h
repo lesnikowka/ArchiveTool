@@ -11,26 +11,26 @@ typedef unsigned char TELEM;
 class TBitField													
 {																
 private:										
-  int  BitLen; 
+  size_t  BitLen;
   TELEM *pMem; 
-  int  MemLen; 
+  size_t MemLen;
 												
   					
-  int   GetMemIndex(const int n) const noexcept;
-  TELEM GetMemMask (const int n) const noexcept;
+  int   GetMemIndex(const size_t n) const noexcept;
+  TELEM GetMemMask (const size_t n) const noexcept;
 public:											
-  TBitField(int len);                      
+  TBitField(size_t len);
   TBitField(const TBitField &bf);          
   TBitField(TBitField &&bf);          
-  TBitField(const TELEM* mem, int MemLen, int BitLen);          
+  TBitField(const TELEM* mem, size_t MemLen, size_t BitLen);
   ~TBitField();
 												
   				
-  int GetLength(void) const noexcept;  
-  int GetCapacity(void) const noexcept;  
-  void SetBit(const int n);       
-  void ClrBit(const int n);       
-  int  GetBit(const int n) const; 
+  size_t GetLength(void) const noexcept;
+  size_t GetCapacity(void) const noexcept;
+  void SetBit(const size_t n);
+  void ClrBit(const size_t n);
+  int  GetBit(const size_t n) const;
 								
   					
   int operator==(const TBitField &bf) const;
