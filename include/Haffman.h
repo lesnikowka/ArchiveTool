@@ -10,18 +10,6 @@ class Haffman {
 public:
 	Haffman() = default;
 
-	void printCodes(std::vector<std::vector<bool>> v) {
-		for (int i = 0; i < v.size(); i++) {
-			if (v[i].size()) {
-				std::cout << (unsigned char)i << ": ";
-				for (auto e : v[i]) {
-					std::cout << e;
-				}
-				std::cout << std::endl;
-			}
-		}
-	}
-
 	TBitField encode(const std::string& data)  {
 		HaffmanTreeCreator hc;
 		std::vector<size_t> freq = collectFrequency(data);
@@ -79,7 +67,7 @@ public:
 		std::string current_code = "";
 		size_t decompressedDataIt = 0;
 
-		for (size_t i = SIZE_OF_SERVICE_INFO; i < SIZE_OF_SERVICE_INFO + sizeOfCompressedData; i++) {
+		for (size_t i = SIZE_OF_SERVICE_INFO; decompressedDataIt < sizeOfDecompressedData; i++){
 			current_code += (unsigned char)tf.GetBit(i);
 			auto mp_it = mp.find(current_code);
 
@@ -89,7 +77,7 @@ public:
 				decompressedDataIt++;
 			}
 		}
-
+		
 		return decompressedData;
 
 	}

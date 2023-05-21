@@ -20,7 +20,6 @@ public:
 
 		std::string outputDirectory(argv[argc - 1]);
 
-
 		std::cout << "  1) Compressing\n  2) Unpacking\n";
 
 		int choicedAction = 0;
@@ -120,7 +119,7 @@ private:
 		}
 		catch (const std::exception& ex) {
 
-			std::cout << "Incorrect output directory (Maybe you should use '/' instead '\\' ever)" << std::endl;
+			std::cout << "Incorrect output directory" << std::endl;
 			return false;//
 		}
 
