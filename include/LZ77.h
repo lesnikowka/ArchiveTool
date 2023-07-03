@@ -16,7 +16,14 @@ public:
 
 		resultData += makeTriple(0, 0);
 
-		for (size_t i = 0; i < data.size(); i += SIZE_OF_BUF) {
+		long long maxSize = (long long)data.size() - (long long)SIZE_OF_BUF - (long long)SIZE_OF_DICT;
+
+		if (maxSize < 0) {
+			resultData += data;
+		}
+
+
+		for (long long i = 0; i < maxSize; i += SIZE_OF_BUF) {
 			bool concurrency = false;
 
 			for (size_t j = SIZE_OF_BUF; j >= MIN_SEQ_SIZE; j--) {
@@ -27,7 +34,7 @@ public:
 				if (place != -1) {
 					concurrency = true;
 
-					writeNext(resultData, last_replace, resultData.size() - last_replace);
+					writeNext(resultData, last_replace, resultData.size() - last_replace - 1);
 
 					last_replace = resultData.size();
 					
@@ -54,7 +61,7 @@ public:
 private:
 
 	long long find(const std::string& source, const std::string& sub, size_t lbound, size_t rbound) {
-		for (size_t i = lbound; i < rbound - sub.size() + 1; i++) {
+		for (size_t i = lbound; i < rbound - sub.size(); i++) { // del +1 
 			bool concurrency = true;
 			for (size_t j = 0; j < sub.size(); j++) {
 				if (source[i + j] != sub[j]) {

@@ -7,39 +7,17 @@
 
 
 int main() {
-	
-	//std::string curdir = "C:/Users/Nikita/Desktop/data/";
-	//
-	//Archiver<RLE> arch;
-	//
-	//
-	//arch.addFile(curdir + "mir.txt");
-	//
-	//arch.addFile(curdir + "ar.pdf");
-	//
-	//arch.addFile(curdir + "test.docx");
-	//
-	//
-	//
-	//
-	//arch.compress();
-	//
-	//arch.save(curdir + "c/");
-	//
-	//Unpacker<RLE> unp;
-	//
-	//unp.addFile(curdir + "c/mir.txt.rle");
-	//unp.addFile(curdir + "c/ar.pdf.rle");
-	//unp.addFile(curdir + "c/test.docx.rle");
-	////
-	//unp.unpack();
-	////
-	//unp.save(curdir + "u/");
+	std::string dir = "C:/Users/Nikita/Desktop/data/";
+	std::string outdir = "C:/Users/Nikita/Desktop/data/out/";
+	std::string name = "1.txt";
 
-	std::string data = "asdajkjkasdasd";
+	Archiver<LZ77> arch;
 
-	std::string word = "jkjk";
+	arch.addFile(dir + name);
 
+	arch.compress();
+
+	arch.save(outdir);
 
 
 }
