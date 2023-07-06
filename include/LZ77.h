@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <unordered_set>
 
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 10;
-	const size_t SIZE_OF_BUF = 3;
-	const size_t MIN_SEQ_SIZE = 3;
+	const size_t SIZE_OF_DICT = 10000;
+	const size_t SIZE_OF_BUF = 20;
+	const size_t MIN_SEQ_SIZE = 13;
 
 	std::string encode(const std::string& data) {
 		std::string compressed_data;
@@ -28,7 +29,11 @@ public:
 
 		long long last_index;
 
-		for (long long i = 0; i < maxSize; i += SIZE_OF_BUF) {
+		std::unordered_set<size_t> replacements;
+
+		replacements.insert(0);
+
+		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
 			last_index = i;
 
 			bool concurrency = false;
@@ -36,7 +41,7 @@ public:
 			for (size_t j = SIZE_OF_BUF; j >= MIN_SEQ_SIZE; j--) {
 				std::string word = data.substr(i + SIZE_OF_DICT, j);
 
-				long long place = find(data, word, i, i + SIZE_OF_DICT);
+				long long place = find(compressed_data, word, SIZE_OF_DICT, replacements);
 
 				if (place != -1) {
 					concurrency = true;
@@ -45,10 +50,12 @@ public:
 
 					last_replace = compressed_data.size();
 					
-					std::string triple = makeTriple(i + SIZE_OF_DICT - place, j);
+					replacements.insert(last_replace);
+
+					std::string triple = makeTriple(compressed_data.size() - place, j);
 
 					compressed_data += triple;
-
+					
 					compressed_data += data.substr(i + SIZE_OF_DICT + j, SIZE_OF_BUF - j);
 				}
 			}
@@ -59,7 +66,6 @@ public:
 		}
 
 		if (last_index + SIZE_OF_BUF + SIZE_OF_DICT != data.size()) {
-			std::string k = data.substr(last_index + SIZE_OF_BUF + SIZE_OF_DICT);
 			compressed_data += data.substr(last_index + SIZE_OF_BUF + SIZE_OF_DICT);
 		}
 
@@ -69,18 +75,22 @@ public:
 	std::string decode(const std::string& compressed_data) {
 		std::string decompressed_data;
 
-		long long triple_index = get_int(compressed_data, 8);
+		unsigned long long triple_index = get_int(compressed_data, 8);
 
 		for (long long i = 12; i < compressed_data.size(); i++) {
 			if (triple_index == i) {
-				int back = get_int(compressed_data, i);
-				int length = get_int(compressed_data, i + 4);
+				unsigned back = get_int(compressed_data, i);
+				unsigned length = get_int(compressed_data, i + 4);
 				triple_index += get_int(compressed_data, i + 8);
-				//decompressed_data += compressed_data.substr(i - back, length);
-				i += 12;
+				
+				//decompressed_data += "  INSERT  ";
+
+				decompressed_data += compressed_data.substr(i - back, length);
+				i += 11;
 			}
 			else {
-				decompressed_data += compressed_data[i];
+				char c = compressed_data[i];
+				decompressed_data += c;
 			}
 		}
 
@@ -89,56 +99,72 @@ public:
 
 private:
 
-	long long find(const std::string& source, const std::string& sub, size_t lbound, size_t rbound) {
-		for (size_t i = lbound; i < rbound - sub.size(); i++) { // del +1 
-			bool concurrency = true;
-			for (size_t j = 0; j < sub.size(); j++) {
-				if (source[i + j] != sub[j]) {
-					concurrency = false;
-					break;
+	long long find(const std::string& source, const std::string& sub, size_t size, const std::unordered_set<size_t> replacements) {
+		size_t s = 0;
+		for (long long i = source.size(); s < size ; i--) { // del +1 
+			if (replacements.find(i - 2) == replacements.end()) {
+				bool concurrency = true;
+				for (long long j = sub.size() - 1; j >= 0; j--) {
+					if (source[i - sub.size() + j + 1] != sub[j]) {
+						concurrency = false;
+						break;
+					}
 				}
+				if (concurrency) {
+					return i - sub.size() + 1;
+				}
+				s++;
 			}
-			if (concurrency) {
-				return i;
+			else {
+				i -= 2;
 			}
 		}
 		return -1;
 	}
 
-	std::string makeTriple(int back, int n) {
+	std::string makeTriple(unsigned back, unsigned n) {
 		std::string triple;
 
+		unsigned tmp;
+
 		for (int i = 0; i < 4; i++) {
-			triple  += (back << 8 * i) >> 24;
+			tmp = (back << (8 * i)) >> 24;
+			triple += tmp;
 		}
 
 		for (int i = 0; i < 4; i++) {
-			triple += (n << 8 * i) >> 24;
+			tmp = (n << (8 * i)) >> 24;
+			triple += tmp;
 		}
 
 		for (int i = 0; i < 4; i++) {
-			triple += (char)0;
+			triple += '\0';
 		}
 
 		return triple;
 	}
 
-	void writeNext(std::string& data, long long last_replace, int next) {
+	void writeNext(std::string& data, unsigned long long last_replace, unsigned next) {
 		for (int i = 0; i < 4; i++) {
-			data[last_replace + 8 + i] = (next << 8 * i) >> 24;
+			unsigned shifted_next = (next << (8 * i)) >> 24;
+			char c = shifted_next;
+
+			data[last_replace + 8 + i] = c;
 		}
 	}
 
-	int get_int(const std::string& data, size_t pos) {
+	unsigned get_int(const std::string& data, size_t pos) {
 		if (pos + 4 > data.size()) {
 			throw std::range_error("index out of the bounds");
 		} 
 
-		int result = 0;
+		unsigned result = 0;
 		
 		for (int i = 0; i < 4; i++) {
-			int a = ((int)data[pos + i]) << (24 - 8 * i);
-			result += ((int)data[pos + i]) << (24 - 8 * i);
+			unsigned a = data[pos + i];
+			a = a << (24 - 8 * i);
+
+			result += ((unsigned)data[pos + i]) << (24 - 8 * i);
 		}
 
 		return result;

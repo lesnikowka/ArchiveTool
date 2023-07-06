@@ -10,16 +10,18 @@ int main() {
 	std::string dir = "C:/Users/Nikita/Desktop/data/";
 	std::string outdir = "C:/Users/Nikita/Desktop/data/out/";
 	std::string decdir = "C:/Users/Nikita/Desktop/data/dec/";
-	std::string name = "1.pdf";
-	std::string name_aft_pack = "1.pdf.lz77";
+	std::string name = "1.txt";
+	std::string name_aft_pack = "1.txt.lz77";
+	std::string pname = "2.pdf";
+	std::string pname_aft_pack = "2.pdf.lz77";
 
 	Archiver<LZ77> arch;
-	arch.addFile(dir + name);
+	arch.addFile(dir + pname);
 	arch.compress();
 	arch.save(outdir);
 
 	Unpacker<LZ77> unp;
-	unp.addFile(outdir + name_aft_pack);
+	unp.addFile(outdir + pname_aft_pack);
 	unp.unpack();
 	unp.save(decdir);
 
