@@ -6,12 +6,12 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 10;
-	const size_t SIZE_OF_BUF = 3;
-	const size_t MIN_SEQ_SIZE = 3;
+	const size_t SIZE_OF_DICT = 1000;
+	const size_t SIZE_OF_BUF = 20;
+	const size_t MIN_SEQ_SIZE = 13;
 
 
-	std::string encode(const std::string& data) { // 2308u18u02308u10823u08
+	std::string encode(const std::string& data) { // tyuasdfghiabqwqwqwq
 		std::string compressed_data;
 
 		long long last_replace = 0;
@@ -34,19 +34,19 @@ public:
 
 		replacements.insert(0);
 
-		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {// 2308u18u02308u10823u08
+		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {// tyuasdfghiabqwqwqwq
 			last_index = i;
 
 			bool concurrency = false;
 
-			for (size_t j = SIZE_OF_BUF; j >= MIN_SEQ_SIZE; j--) {
+			for (size_t j = SIZE_OF_BUF; j >= MIN_SEQ_SIZE && !concurrency; j--) {
 				std::string word = data.substr(i + SIZE_OF_DICT, j);
 
 				long long place = find(compressed_data, word, SIZE_OF_DICT, replacements);
 
 				
 
-				if (place != -1) {// 2308u18u02308u10823u08
+				if (place != -1) {// tyuasdfghiabqwqwqwq
 					std::string s2 = compressed_data.substr(place, word.size());
 					
 					int a = s2 == word;
