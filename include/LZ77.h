@@ -6,11 +6,12 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 10000;
-	const size_t SIZE_OF_BUF = 20;
-	const size_t MIN_SEQ_SIZE = 13;
+	const size_t SIZE_OF_DICT = 10;
+	const size_t SIZE_OF_BUF = 3;
+	const size_t MIN_SEQ_SIZE = 3;
 
-	std::string encode(const std::string& data) {
+
+	std::string encode(const std::string& data) { // 2308u18u02308u10823u08
 		std::string compressed_data;
 
 		long long last_replace = 0;
@@ -33,7 +34,7 @@ public:
 
 		replacements.insert(0);
 
-		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
+		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {// 2308u18u02308u10823u08
 			last_index = i;
 
 			bool concurrency = false;
@@ -43,10 +44,23 @@ public:
 
 				long long place = find(compressed_data, word, SIZE_OF_DICT, replacements);
 
-				if (place != -1) {
+				
+
+				if (place != -1) {// 2308u18u02308u10823u08
+					std::string s2 = compressed_data.substr(place, word.size());
+					
+					int a = s2 == word;
+
 					concurrency = true;
 
+					int v0 = get_int(compressed_data, last_replace + 8);
+
 					writeNext(compressed_data, last_replace, compressed_data.size() - last_replace);
+
+					int v1 = get_int(compressed_data, last_replace + 8);
+					int v2 = compressed_data.size() - last_replace;
+
+					int b = v1 == v2;
 
 					last_replace = compressed_data.size();
 					
@@ -101,7 +115,7 @@ private:
 
 	long long find(const std::string& source, const std::string& sub, size_t size, const std::unordered_set<size_t> replacements) {
 		size_t s = 0;
-		for (long long i = source.size(); s < size ; i--) { // del +1 
+		for (long long i = source.size() - 1; s < size ; i--) { // del +1 
 			if (replacements.find(i - 2) == replacements.end()) {
 				bool concurrency = true;
 				for (long long j = sub.size() - 1; j >= 0; j--) {
@@ -147,9 +161,9 @@ private:
 	void writeNext(std::string& data, unsigned long long last_replace, unsigned next) {
 		for (int i = 0; i < 4; i++) {
 			unsigned shifted_next = (next << (8 * i)) >> 24;
-			char c = shifted_next;
-
-			data[last_replace + 8 + i] = c;
+			unsigned char c = shifted_next;
+			char c2 = c;
+			data[last_replace + 8 + i] = c2;
 		}
 	}
 
@@ -161,10 +175,10 @@ private:
 		unsigned result = 0;
 		
 		for (int i = 0; i < 4; i++) {
-			unsigned a = data[pos + i];
+			unsigned a = (unsigned char)data[pos + i];
 			a = a << (24 - 8 * i);
 
-			result += ((unsigned)data[pos + i]) << (24 - 8 * i);
+			result += ((unsigned)(unsigned char)data[pos + i]) << (24 - 8 * i);
 		}
 
 		return result;
