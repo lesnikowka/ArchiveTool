@@ -37,8 +37,8 @@ int main() {
 	std::string decdir = "C:/Users/Nikita/Desktop/data/dec/";
 	std::string name = "1.txt";
 	std::string name_aft_pack = "1.txt.lz77";
-	std::string pname = "3.pdf";
-	std::string pname_aft_pack = "3.pdf.lz77";
+	std::string pname = "1.pdf";
+	std::string pname_aft_pack = "1.pdf.lz77";
 	
 	Archiver<LZ77> arch;
 	arch.addFile(dir + pname);
