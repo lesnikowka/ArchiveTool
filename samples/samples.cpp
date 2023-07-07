@@ -51,7 +51,6 @@ int main() {
 	unp.save(decdir);
 	
 	//std::string s = "aaaaaaaaaaaa";
-	//
 	//for (unsigned i = 0; i < 1000000; i++) {
 	//	writeNext(s, 0, i);
 	//	unsigned h = get_int(s, 8);
