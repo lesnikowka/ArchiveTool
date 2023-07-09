@@ -65,7 +65,7 @@ File<std::string> loadFile(const std::string& dir) {
 
 File<TBitField> loadBinaryFile(const std::string& dir) {
 	char* buf =  nullptr;
-	int size = 0;
+	long long size = 0;
 	std::ifstream ifs(dir, std::ios::binary);
 	
 	if (ifs.is_open()) {

@@ -6,9 +6,9 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 1000;
+	const size_t SIZE_OF_DICT = 100;
 	const size_t SIZE_OF_BUF = 20;
-	const size_t MIN_SEQ_SIZE = 13;
+	const size_t MIN_SEQ_SIZE = 20;
 
 
 	std::string encode(const std::string& data) { // tyuasdfghiabqwqwqwq
@@ -35,6 +35,13 @@ public:
 		replacements.insert(0);
 
 		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {// tyuasdfghiabqwqwqwq
+
+			if (i % (maxSize / 100) < SIZE_OF_BUF) {
+				system("cls");
+				std::cout << "LZ77 encoding: " << i * 100 / maxSize << "%" << std::endl;
+			}
+
+
 			last_index = i;
 
 			bool concurrency = false;
@@ -44,32 +51,22 @@ public:
 
 				long long place = find(compressed_data, word, SIZE_OF_DICT, replacements);
 
-				
+
 
 				if (place != -1) {// tyuasdfghiabqwqwqwq
-					std::string s2 = compressed_data.substr(place, word.size());
-					
-					int a = s2 == word;
 
 					concurrency = true;
 
-					int v0 = get_int(compressed_data, last_replace + 8);
-
 					writeNext(compressed_data, last_replace, compressed_data.size() - last_replace);
 
-					int v1 = get_int(compressed_data, last_replace + 8);
-					int v2 = compressed_data.size() - last_replace;
-
-					int b = v1 == v2;
-
 					last_replace = compressed_data.size();
-					
+
 					replacements.insert(last_replace);
 
 					std::string triple = makeTriple(compressed_data.size() - place, j);
 
 					compressed_data += triple;
-					
+
 					compressed_data += data.substr(i + SIZE_OF_DICT + j, SIZE_OF_BUF - j);
 				}
 			}
@@ -92,12 +89,17 @@ public:
 		unsigned long long triple_index = get_int(compressed_data, 8);
 
 		for (long long i = 12; i < compressed_data.size(); i++) {
+
+			if (i % (compressed_data.size() / 100) == 0) {
+				system("cls");
+				std::cout << "LZ77 decoding: " << i * 100 / compressed_data.size() << "%" << std::endl;
+			}
+
+
 			if (triple_index == i) {
 				unsigned back = get_int(compressed_data, i);
 				unsigned length = get_int(compressed_data, i + 4);
 				triple_index += get_int(compressed_data, i + 8);
-				
-				//decompressed_data += "  INSERT  ";
 
 				decompressed_data += compressed_data.substr(i - back, length);
 				i += 11;
@@ -115,7 +117,7 @@ private:
 
 	long long find(const std::string& source, const std::string& sub, size_t size, const std::unordered_set<size_t> replacements) {
 		size_t s = 0;
-		for (long long i = source.size() - 1; s < size ; i--) { // del +1 
+		for (long long i = source.size() - 1; s < size; i--) { // del +1 
 			if (replacements.find(i - 2) == replacements.end()) {
 				bool concurrency = true;
 				for (long long j = sub.size() - 1; j >= 0; j--) {
@@ -170,10 +172,10 @@ private:
 	unsigned get_int(const std::string& data, size_t pos) {
 		if (pos + 4 > data.size()) {
 			throw std::range_error("index out of the bounds");
-		} 
+		}
 
 		unsigned result = 0;
-		
+
 		for (int i = 0; i < 4; i++) {
 			unsigned a = (unsigned char)data[pos + i];
 			a = a << (24 - 8 * i);

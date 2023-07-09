@@ -6,9 +6,6 @@
 #include "Haffman.h"
 #include <Archiver.h>
 
-template <class CompressingStrategy>
-class Unpacker {
-};
 
 std::string getExtension(const std::string& name) {
 	int pos = name.rfind('.');
@@ -30,9 +27,8 @@ std::string delExtension(const std::string& name, const std::string& ex) {
 	return name.substr(0, pos);
 }
 
-template<>
-class Unpacker<RLE> {
-	const std::string ARCHIVE_EXTENSION = ".rle";
+
+class Unpacker {
 public:
 	Unpacker() = default;
 
@@ -42,7 +38,7 @@ public:
 	{
 	}
 
-	Unpacker(Unpacker&& other) :
+	Unpacker(Unpacker&& other) noexcept :
 		files(std::move(other.files)),
 		unpackedFiles(std::move(other.unpackedFiles))
 	{
@@ -55,131 +51,7 @@ public:
 		return *this;
 	}
 
-	Unpacker& operator=(Unpacker&& other) {
-		files = std::move(other.files);
-		unpackedFiles = std::move(other.unpackedFiles);
-
-		return *this;
-	}
-
-	void addFile(const std::string& directory) {
-		files.push_back(loadFile(directory));
-	}
-
-	void unpack() {
-		RLE rle;
-
-		auto it = files.begin();
-		while (it != files.end()) {
-			unpackedFiles.push_back(File<std::string>(rle.decode((*it).data), delExtension((*it).directory, ARCHIVE_EXTENSION)));
-			it = files.erase(it);
-		}
-	}
-
-	void save(const std::string& outputDir) {
-		for (const File<std::string>& fl : unpackedFiles) {
-			saveFile(fl, outputDir);
-		}
-	}
-
-	void clear() {
-		files.clear();
-		unpackedFiles.clear();
-	}
-private:
-	std::list<File<std::string>> files;
-	std::list<File<std::string>> unpackedFiles;
-};
-
-
-template<>
-class Unpacker<LZ77> {
-	const std::string ARCHIVE_EXTENSION = ".lz77";
-public:
-	Unpacker() = default;
-
-	Unpacker(const Unpacker& other) :
-		files(other.files),
-		unpackedFiles(other.unpackedFiles)
-	{
-	}
-
-	Unpacker(Unpacker&& other) :
-		files(std::move(other.files)),
-		unpackedFiles(std::move(other.unpackedFiles))
-	{
-	}
-
-	Unpacker& operator=(const Unpacker& other) {
-		files = other.files;
-		unpackedFiles = other.unpackedFiles;
-
-		return *this;
-	}
-
-	Unpacker& operator=(Unpacker&& other) {
-		files = std::move(other.files);
-		unpackedFiles = std::move(other.unpackedFiles);
-
-		return *this;
-	}
-
-	void addFile(const std::string& directory) {
-		files.push_back(loadFile(directory));
-	}
-
-	void unpack() {
-		LZ77 lz77;
-
-		auto it = files.begin();
-		while (it != files.end()) {
-			unpackedFiles.push_back(File<std::string>(lz77.decode((*it).data), delExtension((*it).directory, ARCHIVE_EXTENSION)));
-			it = files.erase(it);
-		}
-	}
-
-	void save(const std::string& outputDir) {
-		for (const File<std::string>& fl : unpackedFiles) {
-			saveFile(fl, outputDir);
-		}
-	}
-
-	void clear() {
-		files.clear();
-		unpackedFiles.clear();
-	}
-private:
-	std::list<File<std::string>> files;
-	std::list<File<std::string>> unpackedFiles;
-};
-
-
-template<>
-class Unpacker<Haffman> {
-	const std::string ARCHIVE_EXTENSION = ".haff";
-public:
-	Unpacker() = default;
-
-	Unpacker(const Unpacker& other) :
-		files(other.files),
-		unpackedFiles(other.unpackedFiles)
-	{
-	}
-
-	Unpacker(Unpacker&& other) :
-		files(std::move(other.files)),
-		unpackedFiles(std::move(other.unpackedFiles))
-	{
-	}
-
-	Unpacker& operator=(const Unpacker& other) {
-		files = other.files;
-		unpackedFiles = other.unpackedFiles;
-
-		return *this;
-	}
-
-	Unpacker& operator=(Unpacker&& other) {
+	Unpacker& operator=(Unpacker&& other) noexcept {
 		files = std::move(other.files);
 		unpackedFiles = std::move(other.unpackedFiles);
 
@@ -191,11 +63,14 @@ public:
 	}
 
 	void unpack() {
-		Haffman h;
+		Haffman haff;
+		LZ77 lz;
 
 		auto it = files.begin();
 		while (it != files.end()) {
-			unpackedFiles.push_back(File<std::string>(h.decode((*it).data), delExtension((*it).directory, ARCHIVE_EXTENSION)));
+			std::string haffDecompressedData = haff.decode((*it).data);
+
+			unpackedFiles.push_back(File<std::string>(lz.decode(haffDecompressedData), delExtension((*it).directory, ARCHIVE_EXTENSION)));
 			it = files.erase(it);
 		}
 	}

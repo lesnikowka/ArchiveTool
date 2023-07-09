@@ -5,6 +5,9 @@
 
 
 class RLE {
+
+	const unsigned MAX_LENGHT = 126;
+
 public:
 	RLE() = default;
 	
@@ -15,9 +18,9 @@ public:
 		
 			bool similar = data[0] == data[1];
 		
-			int start = 0;
+			size_t start = 0;
 		
-			for (int i = 0; i < data.size() - 1; i++) {
+			for (size_t i = 0; i < data.size() - 1; i++) {
 				if (i - start > MAX_LENGHT) {
 					result += getSignByte(similar, i - start);
 					if (similar) {
@@ -60,7 +63,7 @@ public:
 		std::pair<bool, unsigned> info;
 
 
-		for (unsigned i = 0; i < data.size(); i++) {
+		for (size_t i = 0; i < data.size(); i++) {
 			info = getLenghtAndIsSimilar(data[i]);
 
 			if (info.first) {
@@ -76,7 +79,6 @@ public:
 	}
 
 private:
-	const unsigned MAX_LENGHT = 126;
 
 	unsigned char getSignByte(bool isSimilarSequence, int lenght) {
 		assert(lenght <= 127 && lenght >=0);
