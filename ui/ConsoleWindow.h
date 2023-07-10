@@ -4,6 +4,8 @@
 #include "Unpacker.h"
 #include <iostream>
 
+/*
+
 class ConsoleWindow {
 public:
 	void Run(int argc, char **argv) {
@@ -230,3 +232,5 @@ private:
 };
 
 ConsoleWindow* ConsoleWindow::instance = nullptr;
+
+*/

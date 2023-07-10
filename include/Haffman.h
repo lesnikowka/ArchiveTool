@@ -4,6 +4,7 @@
 #include "tbitfield.h"
 #include <unordered_map>
 #include <numeric>
+#include "BitfieldUtilities.h"
 
 class Haffman {
 
@@ -12,7 +13,7 @@ class Haffman {
 public:
 	Haffman() = default;
 
-	TBitField encode(const std::string& data)  {
+	TBitField encode(const std::string& data) {
 		HaffmanTreeCreator hc;
 		std::vector<size_t> freq = collectFrequency(data);
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
@@ -23,7 +24,7 @@ public:
 
 		writeValueInBitField(CompressedData, sizeOfCompressedData, 0);
 
-		for (size_t i = 0; i < freq.size(); i++){
+		for (size_t i = 0; i < freq.size(); i++) {
 			writeValueInBitField(CompressedData, freq[i], sizeof(size_t) * 8 * (1 + i));
 		}
 
@@ -50,7 +51,7 @@ public:
 		return CompressedData;
 	}
 
-	std::string decode(const TBitField& tf)  {
+	std::string decode(const TBitField& tf) {
 		if (tf.GetLength() == 0) {
 			throw std::invalid_argument("Data is empty");
 		}
@@ -80,7 +81,7 @@ public:
 
 		size_t prev = decompressedDataIt;
 
-		for (size_t i = SIZE_OF_SERVICE_INFO; decompressedDataIt < sizeOfDecompressedData; i++){
+		for (size_t i = SIZE_OF_SERVICE_INFO; decompressedDataIt < sizeOfDecompressedData; i++) {
 
 			if (decompressedDataIt % (sizeOfDecompressedData / 100) == 0 && prev != decompressedDataIt) {
 				system("cls");
@@ -99,7 +100,7 @@ public:
 				decompressedDataIt++;
 			}
 		}
-		
+
 		return decompressedData;
 
 	}
@@ -129,33 +130,6 @@ private:
 		return sizeOfCompressedData;
 	}
 
-	template<class T>
-	void writeValueInBitField(TBitField& tf, const T& val, size_t start) {
-		size_t bitsize = sizeof(T) * 8;
-
-		for (int i = bitsize-1; i >= 0; i--) {
-			if ((val << bitsize - i - 1)>> bitsize - 1){
-				tf.SetBit(start + bitsize - i - 1);
-			}
-		}
-	}
-
-	template<class T> 
-	T getValueFromBitField(const TBitField& tf, size_t start) {
-		size_t bitsize = sizeof(T) * 8;
-		T val = 0;
-
-		int deg = bitsize - 1;
-		for (size_t i = start; i < start + bitsize; i++) {
-			if (tf.GetBit(i)) {
-				val += (T)1 << deg;
-			}
-			deg--;
-		}
-
-		return val;
-	}
-
 	std::string boolVectorToString(const std::vector<bool> code) {
 		std::string result;
 		result.resize(code.size());
@@ -163,7 +137,7 @@ private:
 		for (size_t i = 0; i < code.size(); i++) {
 			result[i] = (unsigned char)code[i];
 		}
-		
+
 		return result;
 	}
 

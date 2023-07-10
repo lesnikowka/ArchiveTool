@@ -2,13 +2,14 @@
 
 #include <string>
 #include <unordered_set>
+#include "StringUtilities.h"
 
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 100;
+	const size_t SIZE_OF_DICT = 400;
 	const size_t SIZE_OF_BUF = 20;
-	const size_t MIN_SEQ_SIZE = 20;
+	const size_t MIN_SEQ_SIZE = 17;
 
 
 	std::string encode(const std::string& data) { // tyuasdfghiabqwqwqwq
@@ -160,29 +161,13 @@ private:
 		return triple;
 	}
 
-	void writeNext(std::string& data, unsigned long long last_replace, unsigned next) {
-		for (int i = 0; i < 4; i++) {
-			unsigned shifted_next = (next << (8 * i)) >> 24;
-			unsigned char c = shifted_next;
-			char c2 = c;
-			data[last_replace + 8 + i] = c2;
-		}
+	void writeNext(std::string& data, size_t last_replace, unsigned next) {
+
+		writeValueToString(data, last_replace + 8, next);
 	}
 
 	unsigned get_int(const std::string& data, size_t pos) {
-		if (pos + 4 > data.size()) {
-			throw std::range_error("index out of the bounds");
-		}
 
-		unsigned result = 0;
-
-		for (int i = 0; i < 4; i++) {
-			unsigned a = (unsigned char)data[pos + i];
-			a = a << (24 - 8 * i);
-
-			result += ((unsigned)(unsigned char)data[pos + i]) << (24 - 8 * i);
-		}
-
-		return result;
+		return getValueFromString<unsigned>(data, pos);
 	}
 };

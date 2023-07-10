@@ -121,3 +121,24 @@ void saveFile(const File<TBitField> fl, const std::string& outputDir, const std:
 
 	ofs.close();
 }
+
+
+std::string getExtension(const std::string& name) {
+	int pos = name.rfind('.');
+	if (pos == std::string::npos) {
+		throw std::invalid_argument("Incorrect file name");
+	}
+	return name.substr(pos);
+}
+
+std::string delExtension(const std::string& name, const std::string& ex) {
+	std::string extension = getExtension(name);
+
+	if (extension != ex) {
+		throw std::invalid_argument("Incorrect extension");
+	}
+
+	int pos = name.rfind('.');
+
+	return name.substr(0, pos);
+}
