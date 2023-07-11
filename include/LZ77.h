@@ -8,16 +8,19 @@
 class LZ77 {
 public:
 	const size_t SIZE_OF_DICT = 400;
-	const size_t SIZE_OF_BUF = 20;
-	const size_t MIN_SEQ_SIZE = 17;
+	const size_t SIZE_OF_BUF = 12;
+	const size_t MIN_SEQ_SIZE = 9;
 
 
 	std::string encode(const std::string& data) { // tyuasdfghiabqwqwqwq
+
 		std::string compressed_data;
 
 		long long last_replace = 0;
 
-		compressed_data += makeTriple(0, 0);
+		//compressed_data += makeTriple<__int16, __int16, unsigned>(0, 0);
+
+		compressed_data.resize(sizeof(unsigned));
 
 		long long maxSize = (long long)data.size() - (long long)SIZE_OF_BUF - (long long)SIZE_OF_DICT;
 
@@ -58,13 +61,18 @@ public:
 
 					concurrency = true;
 
-					writeNext(compressed_data, last_replace, compressed_data.size() - last_replace);
+					if (last_replace != 0) {
+						writeNext<__int16, __int16, unsigned>(compressed_data, last_replace, compressed_data.size() - last_replace);
+					}
+					else {
+						writeValueToString<unsigned>(compressed_data, 0, compressed_data.size() - last_replace);
+					}
 
 					last_replace = compressed_data.size();
 
 					replacements.insert(last_replace);
 
-					std::string triple = makeTriple(compressed_data.size() - place, j);
+					std::string triple = makeTriple<__int16, __int16, unsigned>(compressed_data.size() - place, j);
 
 					compressed_data += triple;
 
@@ -85,29 +93,28 @@ public:
 	}
 
 	std::string decode(const std::string& compressed_data) {
+
 		std::string decompressed_data;
 
-		unsigned long long triple_index = get_int(compressed_data, 8);
+		size_t triple_index = getValueFromString<unsigned>(compressed_data, 0);
 
-		for (long long i = 12; i < compressed_data.size(); i++) {
+		for (size_t i = sizeof(unsigned); i < compressed_data.size(); i++) {
 
 			if (i % (compressed_data.size() / 100) == 0) {
 				system("cls");
 				std::cout << "LZ77 decoding: " << i * 100 / compressed_data.size() << "%" << std::endl;
 			}
 
-
 			if (triple_index == i) {
-				unsigned back = get_int(compressed_data, i);
-				unsigned length = get_int(compressed_data, i + 4);
-				triple_index += get_int(compressed_data, i + 8);
+				__int16 back = getValueFromString<__int16>(compressed_data, i);
+				__int16 length = getValueFromString<__int16>(compressed_data, i + sizeof(__int16));
+				triple_index += getValueFromString<unsigned>(compressed_data, i + 2*sizeof(__int16));
 
 				decompressed_data += compressed_data.substr(i - back, length);
-				i += 11;
+				i += 2*sizeof(__int16) + sizeof(unsigned) - 1;
 			}
 			else {
-				char c = compressed_data[i];
-				decompressed_data += c;
+				decompressed_data += compressed_data[i];
 			}
 		}
 
@@ -138,36 +145,30 @@ private:
 		}
 		return -1;
 	}
-
-	std::string makeTriple(unsigned back, unsigned n) {
+	
+	template<class A, class B, class C>
+	std::string makeTriple(A back, B n) {
 		std::string triple;
 
-		unsigned tmp;
-
-		for (int i = 0; i < 4; i++) {
-			tmp = (back << (8 * i)) >> 24;
-			triple += tmp;
+		for (int i = 0; i < sizeof(A); i++) {
+			triple += (back << (8 * i)) >> (sizeof(A)*8 - 8);
 		}
 
-		for (int i = 0; i < 4; i++) {
-			tmp = (n << (8 * i)) >> 24;
-			triple += tmp;
+		for (int i = 0; i < sizeof(B); i++) {
+			triple += (n << (8 * i)) >> (sizeof(A)*8 - 8);
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < sizeof(C); i++) {
 			triple += '\0';
 		}
 
 		return triple;
 	}
 
-	void writeNext(std::string& data, size_t last_replace, unsigned next) {
 
-		writeValueToString(data, last_replace + 8, next);
+	template<class A, class B, class C>
+	void writeNext(std::string& data, size_t last_replace, C next) {
+		writeValueToString<C>(data, last_replace + sizeof(A) + sizeof(B), next);
 	}
 
-	unsigned get_int(const std::string& data, size_t pos) {
-
-		return getValueFromString<unsigned>(data, pos);
-	}
 };

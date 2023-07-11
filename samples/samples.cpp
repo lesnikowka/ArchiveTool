@@ -11,9 +11,9 @@ int main() {
 	std::string outdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/out/";
 	std::string decdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/dec/";
 	std::string name = "1.txt";
-	std::string name_aft_pack = "1.txt.ajr";
+	std::string name_aft_pack = "1.txt.lzhf";
 	std::string pname = "1.pdf";
-	std::string pname_aft_pack = "1.pdf.ajr";
+	std::string pname_aft_pack = "1.pdf.lzhf";
 	
 	Archiver arch;
 	arch.addFile(dir + pname);
