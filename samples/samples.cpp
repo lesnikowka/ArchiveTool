@@ -1,15 +1,15 @@
 #include <iostream>
-#include "Archiver.h"
-#include "File.h"
+#include "../include/Archiver.h"
+#include "../include/File.h"
 #include <fstream>
-//#include <LZ77.h>
-#include <Unpacker.h>
+//#include ""../include/LZ77.h"
+#include "../include/Unpacker.h"
 
 
 int main() {
-	std::string dir = "C:/Users/lesni/OneDrive/Рабочий стол/data/";
-	std::string outdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/out/";
-	std::string decdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/dec/";
+	std::string dir = "C:/Users/lesni/OneDrive/пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ/data/";
+	std::string outdir = "C:/Users/lesni/OneDrive/пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ/data/out/";
+	std::string decdir = "C:/Users/lesni/OneDrive/пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ/data/dec/";
 	std::string name = "1.txt";
 	std::string name_aft_pack = "1.txt.lzhf";
 	std::string pname = "1.pdf";

@@ -18,7 +18,7 @@ public:
 
 		long long last_replace = 0;
 
-		//compressed_data += makeTriple<__int16, __int16, unsigned>(0, 0);
+		//compressed_data += makeTriple<__int16_t, __int16_t, unsigned>(0, 0);
 
 		compressed_data.resize(sizeof(unsigned));
 
@@ -62,7 +62,7 @@ public:
 					concurrency = true;
 
 					if (last_replace != 0) {
-						writeNext<__int16, __int16, unsigned>(compressed_data, last_replace, compressed_data.size() - last_replace);
+						writeNext<__int16_t, __int16_t, unsigned>(compressed_data, last_replace, compressed_data.size() - last_replace);
 					}
 					else {
 						writeValueToString<unsigned>(compressed_data, 0, compressed_data.size() - last_replace);
@@ -72,7 +72,7 @@ public:
 
 					replacements.insert(last_replace);
 
-					std::string triple = makeTriple<__int16, __int16, unsigned>(compressed_data.size() - place, j);
+					std::string triple = makeTriple<__int16_t, __int16_t, unsigned>(compressed_data.size() - place, j);
 
 					compressed_data += triple;
 
@@ -106,12 +106,12 @@ public:
 			}
 
 			if (triple_index == i) {
-				__int16 back = getValueFromString<__int16>(compressed_data, i);
-				__int16 length = getValueFromString<__int16>(compressed_data, i + sizeof(__int16));
-				triple_index += getValueFromString<unsigned>(compressed_data, i + 2*sizeof(__int16));
+				__int16_t back = getValueFromString<__int16_t>(compressed_data, i);
+				__int16_t length = getValueFromString<__int16_t>(compressed_data, i + sizeof(__int16_t));
+				triple_index += getValueFromString<unsigned>(compressed_data, i + 2*sizeof(__int16_t));
 
 				decompressed_data += compressed_data.substr(i - back, length);
-				i += 2*sizeof(__int16) + sizeof(unsigned) - 1;
+				i += 2*sizeof(__int16_t) + sizeof(unsigned) - 1;
 			}
 			else {
 				decompressed_data += compressed_data[i];

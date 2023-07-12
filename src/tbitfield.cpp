@@ -1,4 +1,5 @@
 #include "tbitfield.h"
+#include <cstring>
 
 TBitField::TBitField(size_t len)
 {
@@ -84,7 +85,7 @@ void TBitField::ClrBit(const size_t n)
 int TBitField::GetBit(const size_t n) const
 {
     if (n >= BitLen) {
-        throw std::exception("index out of the bounds");
+        throw std::out_of_range("index out of the bounds");
 
         return 0;
     }
