@@ -8,18 +8,16 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 400;
-	const size_t SIZE_OF_BUF = 12;
+	const size_t SIZE_OF_DICT = 500;
+	const size_t SIZE_OF_BUF = 13;
 	const size_t MIN_SEQ_SIZE = 9;
 
 
-	std::string encode(const std::string& data) { // tyuasdfghiabqwqwqwq
+	std::string encode(const std::string& data) { 
 
 		std::string compressed_data;
 
 		long long last_replace = 0;
-
-		//compressed_data += makeTriple<__int16_t, __int16_t, unsigned>(0, 0);
 
 		compressed_data.resize(sizeof(unsigned));
 
@@ -39,7 +37,8 @@ public:
 
 		replacements.insert(0);
 
-		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {// tyuasdfghiabqwqwqwq
+
+		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
 
 			if (i % (maxSize / 100) < SIZE_OF_BUF) {
 				system("cls");
@@ -56,9 +55,7 @@ public:
 
 				long long place = find(compressed_data, word, SIZE_OF_DICT, replacements);
 
-
-
-				if (place != -1) {// tyuasdfghiabqwqwqwq
+				if (place != -1) {
 
 					concurrency = true;
 
@@ -171,5 +168,4 @@ private:
 	void writeNext(std::string& data, size_t last_replace, C next) {
 		writeValueToString<C>(data, last_replace + sizeof(A) + sizeof(B), next);
 	}
-
 };

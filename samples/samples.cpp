@@ -5,30 +5,37 @@
 
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 
 
 
 int main() {
-	/*std::string dir = "C:/Users/lesni/OneDrive/������� ����/data/";
-	std::string outdir = "C:/Users/lesni/OneDrive/������� ����/data/out/";
-	std::string decdir = "C:/Users/lesni/OneDrive/������� ����/data/dec/";
-	std::string name = "1.txt";
+	std::string dir = "/home/nik/data/";
+	std::string outdir = "/home/nik/data/out/";
+	std::string decdir = "/home/nik/data/dec/";
+	std::string name = "1";
 	std::string name_aft_pack = "1.txt.lzhf";
-	std::string pname = "1.pdf";
-	std::string pname_aft_pack = "1.pdf.lzhf";
 	
+	int start = std::clock();
+
 	Archiver arch;
-	arch.addFile(dir + pname);
+	arch.addFile(dir + name);
 	arch.compress();
 	arch.save(outdir);
 	
-	Unpacker unp;
-	unp.addFile(outdir + pname_aft_pack);
-	unp.unpack();
-	unp.save(decdir);*/
+	int end = std::clock();
+
+	std::cout << "TIME: " << (end - start) / CLOCKS_PER_SEC << " seconds\n\n";
 	
-	std::cout << "TEST MY PROGRAM" << std::endl << std::endl << std::endl;
+
+
+	//Unpacker unp;
+	//unp.addFile(outdir + name_aft_pack);
+	//unp.unpack();
+	//unp.save(decdir);
+	
+	//std::cout << "TEST MY PROGRAM" << std::endl << std::endl << std::endl;
 
 
 }
