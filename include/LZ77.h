@@ -1,9 +1,10 @@
 #pragma once
 
+
 #include <string>
 #include <unordered_set>
-#include "StringUtilities.h"
 
+#include "StringUtilities.h"
 
 class LZ77 {
 public:

@@ -1,13 +1,16 @@
-#include <iostream>
 #include "../include/Archiver.h"
 #include "../include/File.h"
-#include <fstream>
-//#include ""../include/LZ77.h"
 #include "../include/Unpacker.h"
+//#include ""../include/LZ77.h"
+
+#include <iostream>
+#include <fstream>
+
+
 
 
 int main() {
-	std::string dir = "C:/Users/lesni/OneDrive/������� ����/data/";
+	/*std::string dir = "C:/Users/lesni/OneDrive/������� ����/data/";
 	std::string outdir = "C:/Users/lesni/OneDrive/������� ����/data/out/";
 	std::string decdir = "C:/Users/lesni/OneDrive/������� ����/data/dec/";
 	std::string name = "1.txt";
@@ -23,9 +26,9 @@ int main() {
 	Unpacker unp;
 	unp.addFile(outdir + pname_aft_pack);
 	unp.unpack();
-	unp.save(decdir);
+	unp.save(decdir);*/
 	
-	
+	std::cout << "TEST MY PROGRAM" << std::endl << std::endl << std::endl;
 
 
 }

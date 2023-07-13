@@ -1,10 +1,14 @@
 #pragma once
+
+
 #include <vector>
-#include "HaffmanTreeCreator.h"
-#include "tbitfield.h"
 #include <unordered_map>
 #include <numeric>
+
+#include "HaffmanTreeCreator.h"
+#include "tbitfield.h"
 #include "BitfieldUtilities.h"
+
 
 class Haffman {
 
@@ -113,11 +117,6 @@ private:
 		}
 
 		return frequency;
-	}
-
-	std::vector<std::vector<bool>> createHaffmanCodes(const std::vector<size_t> frequency) {
-		std::vector<std::vector<bool>> haffmanTable(256);
-
 	}
 
 	size_t getSizeOfCompressedData(const std::vector<std::vector<bool>>& codes, const std::vector<size_t>& freq) {

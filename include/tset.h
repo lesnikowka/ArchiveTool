@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sstream>
+
 #include "tbitfield.h"
 
 class TSet

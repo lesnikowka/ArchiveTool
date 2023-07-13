@@ -1,11 +1,13 @@
 #pragma once
 
+
+#include <list>
+
+
 #include "File.h"
 #include "RLE.h"
-#include <list>
 #include "Haffman.h"
 #include "LZ77.h"
-
 
 const std::string LZ_EXTENSION = ".lz";
 const std::string LZ_HAFF_EXTENSION = ".lzhf";

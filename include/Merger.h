@@ -1,9 +1,13 @@
 #pragma once
+
+
 #include <string>
 #include <list>
-#include "File.h"
 #include <unordered_map>
+
 #include "BitfieldUtilities.h"
+#include "File.h"
+
 
 class Merger {
 	static const int MAX_SIZE_OF_NAME = 10;

@@ -5,7 +5,9 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include "../include/tbitfield.h"
+
+#include "tbitfield.h"
+
 
 template <class ContainerType>
 struct File {
