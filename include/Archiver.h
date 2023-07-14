@@ -4,7 +4,7 @@
 #include "RLE.h"
 #include <list>
 #include "Haffman.h"
-#include "lz77.h"
+#include "LZ77.h"
 
 
 const std::string ARCHIVE_EXTENSION = ".ajr";
