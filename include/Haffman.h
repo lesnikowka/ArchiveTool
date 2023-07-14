@@ -6,7 +6,9 @@
 #include <numeric>
 
 class Haffman {
+
 	const size_t SIZE_OF_SERVICE_INFO = 16448;
+
 public:
 	Haffman() = default;
 
@@ -26,7 +28,9 @@ public:
 		}
 
 		size_t i = SIZE_OF_SERVICE_INFO;
+
 		for (unsigned char c : data) {
+		
 			size_t j = 0;
 			for (; j < codes[c].size(); j++) {
 				if (codes[c][j]) {
@@ -68,6 +72,7 @@ public:
 		size_t decompressedDataIt = 0;
 
 		for (size_t i = SIZE_OF_SERVICE_INFO; decompressedDataIt < sizeOfDecompressedData; i++){
+
 			current_code += (unsigned char)tf.GetBit(i);
 			auto mp_it = mp.find(current_code);
 
@@ -126,7 +131,7 @@ private:
 		int deg = bitsize - 1;
 		for (size_t i = start; i < start + bitsize; i++) {
 			if (tf.GetBit(i)) {
-				val += 1 << deg;
+				val += (T)1 << deg;
 			}
 			deg--;
 		}

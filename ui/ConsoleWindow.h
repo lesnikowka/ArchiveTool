@@ -6,7 +6,7 @@
 
 class ConsoleWindow {
 public:
-	void Run(int argc, char **argv) {
+	void Run(int argc, char** argv) {
 		if (argc < 3) {
 			std::cout << "Too few arguments" << std::endl;
 			return;
@@ -15,7 +15,7 @@ public:
 
 		for (int i = 1; i < argc - 1; i++) {
 			directories.push_back(argv[i]);
-			
+
 		}
 
 		std::string outputDirectory(argv[argc - 1]);
@@ -35,40 +35,15 @@ public:
 			}
 		}
 
-		std::unordered_map<std::vector<bool>, unsigned char> mj;
-
-		int algorithmType = 0;
 
 		if (choicedAction == 1) {
-
-			std::cout << "  1) Optimal Huffman codes(better)\n  2) RLE(bad efficient)\n";
-
-			while (true) {
-				std::cin >> algorithmType;
-
-				if (algorithmType != 1 && algorithmType != 2) {
-					std::cout << "Incorrect input\n";
-				}
-				else {
-					break;
-				}
+			if (!Compress(directories, outputDirectory)) {
+				return;
 			}
-		}
-
-		if (choicedAction == 1) {
-			if (algorithmType == 1) {
-				if (!Compress<Haffman>(directories, outputDirectory)) {
-					return;
-				}
-			}
-			else if (algorithmType == 2) {
-				if (!Compress<RLE>(directories, outputDirectory)) {
-					return;
-				}
-			}
+			
 		}
 		else if (choicedAction == 2) {
-			if (!UnpackAutoCheckExtension(directories, outputDirectory)) {
+			if (!Unpack(directories, outputDirectory)) {
 				return;
 			}
 		}
@@ -91,7 +66,7 @@ private:
 
 	ConsoleWindow() = default;
 
-	template<class T>
+	template <class T>
 	bool AddFiles(T& arch, const std::vector<std::string>& directories, const std::string& outputDirectory) {
 		std::cout << "Loading files..." << std::endl;
 
@@ -120,7 +95,7 @@ private:
 		catch (const std::exception& ex) {
 
 			std::cout << "Incorrect output directory" << std::endl;
-			return false;//
+			return false;
 		}
 
 		std::cout << "Done" << std::endl;
@@ -128,8 +103,8 @@ private:
 		return true;
 	}
 
-	template<class T>
-	bool CompressFiles(T& arch, const std::vector<std::string>& directories, const std::string& outputDirectory) {
+
+	bool CompressFiles(Archiver& arch, const std::vector<std::string>& directories, const std::string& outputDirectory) {
 		std::cout << "Compressing files..." << std::endl;
 
 		try {
@@ -145,12 +120,11 @@ private:
 		return true;
 	}
 
-	template<class T>
-	bool UnpackFiles(T& arch, const std::vector<std::string>& directories, const std::string& outputDirectory) {
+	bool UnpackFiles(Unpacker& unp, const std::vector<std::string>& directories, const std::string& outputDirectory) {
 		std::cout << "Unpacking files..." << std::endl;
 
 		try {
-			arch.unpack();
+			unp.unpack();
 		}
 		catch (const std::exception& ex) {
 			std::cout << "Program failed" << std::endl;
@@ -162,9 +136,9 @@ private:
 		return true;
 	}
 
-	template<class T>
+
 	bool Compress(const std::vector<std::string>& directories, const std::string& outputDirectory) {
-		Archiver<T> arch;
+		Archiver arch;
 
 		if (!AddFiles(arch, directories, outputDirectory)) {
 			return false;
@@ -181,9 +155,9 @@ private:
 		return true;
 	}
 
-	template<class T>
+	
 	bool Unpack(const std::vector<std::string>& directories, const std::string& outputDirectory) {
-		Unpacker<T> unp;
+		Unpacker unp;
 
 		if (!AddFiles(unp, directories, outputDirectory)) {
 			return false;
@@ -199,34 +173,7 @@ private:
 
 		return true;
 	}
-
-	bool UnpackAutoCheckExtension(const std::vector<std::string>& directories, const std::string& outputDirectory) {
-		std::vector<std::string> rleFiles;
-		std::vector<std::string> haffFiles;
-
-		for (const std::string& dir : directories) {
-			if (getExtension(dir) == RLE_ARCHIVE_EXTENSION) {
-				rleFiles.push_back(dir);
-			}
-			else if (getExtension(dir) == HAFFMAN_ARCHIVE_EXTENSION) {
-				haffFiles.push_back(dir);
-			}
-			else {
-				std::cout << "Incorrect extension" << std::endl;
-				return false;
-			}
-		}
-
-		if (!Unpack<RLE>(rleFiles, outputDirectory)) {
-			return false;
-		}
-
-		if (!Unpack<Haffman>(haffFiles, outputDirectory)) {
-			return false;
-		}
-
-		return true;
-	}
 };
+
 
 ConsoleWindow* ConsoleWindow::instance = nullptr;

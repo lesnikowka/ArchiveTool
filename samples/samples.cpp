@@ -2,38 +2,36 @@
 #include "Archiver.h"
 #include "File.h"
 #include <fstream>
+//#include <LZ77.h>
 #include <Unpacker.h>
-
+#include <ctime>
 
 int main() {
+	std::string dir = "C:/Users/lesni/OneDrive/Рабочий стол/data/";
+	std::string outdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/out/";
+	std::string decdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/dec/";
+	std::string name = "1.txt";
+	std::string name_aft_pack = "1.txt.ajr";
+	std::string pname = "ui.exe";
+	std::string pname_aft_pack = "ui.exe.ajr";
+
+	int start = std::clock();
 	
-	std::string curdir = "C:/Users/Nikita/Desktop/data/";
-
-	Archiver<RLE> arch;
-
-
-	arch.addFile(curdir + "mir.txt");
-
-	arch.addFile(curdir + "ar.pdf");
-
-	arch.addFile(curdir + "test.docx");
-
-
-
-
+	Archiver arch;
+	arch.addFile(dir + pname);
 	arch.compress();
+	arch.save(outdir);
 
-	arch.save(curdir + "c/");
+	int end = std::clock();
 
-	Unpacker<RLE> unp;
+	std::cout << "Time: " << (end - start) / CLOCKS_PER_SEC << " seconds" << std::endl;
 	
-	unp.addFile(curdir + "c/mir.txt.rle");
-	unp.addFile(curdir + "c/ar.pdf.rle");
-	unp.addFile(curdir + "c/test.docx.rle");
-	//
+	Unpacker unp;
+	unp.addFile(outdir + pname_aft_pack);
 	unp.unpack();
-	//
-	unp.save(curdir + "u/");
+	unp.save(decdir);
+	
+	
 
 
 }
