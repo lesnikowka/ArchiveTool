@@ -115,7 +115,7 @@ public:
 
 private:
 
-	long long find(const std::string& source, const std::string& sub, size_t size, const std::unordered_set<size_t> replacements) {
+	long long find(const std::string& source, const std::string& sub, size_t size, const std::unordered_set<size_t>& replacements) {
 		size_t s = 0;
 		for (long long i = source.size() - 1; s < size; i--) { // del +1 
 			if (replacements.find(i - 2) == replacements.end()) {
