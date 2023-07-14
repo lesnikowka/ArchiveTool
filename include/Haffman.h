@@ -29,15 +29,8 @@ public:
 
 		size_t i = SIZE_OF_SERVICE_INFO;
 
-		size_t progress = 0;
-
 		for (unsigned char c : data) {
-			progress++;
-			if (progress % (data.size() / 100) == 0) {
-				system("cls");
-				std::cout << "Haffman encoding: " << progress * 100 / data.size() << "%" << std::endl;
-			}
-
+		
 			size_t j = 0;
 			for (; j < codes[c].size(); j++) {
 				if (codes[c][j]) {
@@ -78,17 +71,7 @@ public:
 		std::string current_code = "";
 		size_t decompressedDataIt = 0;
 
-		size_t prev = decompressedDataIt;
-
 		for (size_t i = SIZE_OF_SERVICE_INFO; decompressedDataIt < sizeOfDecompressedData; i++){
-
-			if (decompressedDataIt % (sizeOfDecompressedData / 100) == 0 && prev != decompressedDataIt) {
-				system("cls");
-				std::cout << "Haffman decoding: " << decompressedDataIt * 100 / sizeOfDecompressedData << "%" << std::endl;
-			}
-
-			prev = decompressedDataIt;
-
 
 			current_code += (unsigned char)tf.GetBit(i);
 			auto mp_it = mp.find(current_code);

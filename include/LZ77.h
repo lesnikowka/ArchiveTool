@@ -6,12 +6,12 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 100;
-	const size_t SIZE_OF_BUF = 20;
-	const size_t MIN_SEQ_SIZE = 20;
+	const size_t SIZE_OF_DICT = 400;
+	const size_t SIZE_OF_BUF = 15;
+	const size_t MIN_SEQ_SIZE = 13;
 
 
-	std::string encode(const std::string& data) { // tyuasdfghiabqwqwqwq
+	std::string encode(const std::string& data) { 
 		std::string compressed_data;
 
 		long long last_replace = 0;
@@ -34,13 +34,7 @@ public:
 
 		replacements.insert(0);
 
-		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {// tyuasdfghiabqwqwqwq
-
-			if (i % (maxSize / 100) < SIZE_OF_BUF) {
-				system("cls");
-				std::cout << "LZ77 encoding: " << i * 100 / maxSize << "%" << std::endl;
-			}
-
+		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
 
 			last_index = i;
 
@@ -51,9 +45,7 @@ public:
 
 				long long place = find(compressed_data, word, SIZE_OF_DICT, replacements);
 
-
-
-				if (place != -1) {// tyuasdfghiabqwqwqwq
+				if (place != -1) {
 
 					concurrency = true;
 
@@ -90,12 +82,6 @@ public:
 
 		for (long long i = 12; i < compressed_data.size(); i++) {
 
-			if (i % (compressed_data.size() / 100) == 0) {
-				system("cls");
-				std::cout << "LZ77 decoding: " << i * 100 / compressed_data.size() << "%" << std::endl;
-			}
-
-
 			if (triple_index == i) {
 				unsigned back = get_int(compressed_data, i);
 				unsigned length = get_int(compressed_data, i + 4);
@@ -117,7 +103,7 @@ private:
 
 	long long find(const std::string& source, const std::string& sub, size_t size, const std::unordered_set<size_t>& replacements) {
 		size_t s = 0;
-		for (long long i = source.size() - 1; s < size; i--) { // del +1 
+		for (long long i = source.size() - 1; s < size; i--) { 
 			if (replacements.find(i - 2) == replacements.end()) {
 				bool concurrency = true;
 				for (long long j = sub.size() - 1; j >= 0; j--) {
