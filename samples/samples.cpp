@@ -12,8 +12,8 @@ int main() {
 	std::string decdir = "C:/Users/lesni/OneDrive/Рабочий стол/data/dec/";
 	std::string name = "1.txt";
 	std::string name_aft_pack = "1.txt.ajr";
-	std::string pname = "1.pdf";
-	std::string pname_aft_pack = "1.pdf.ajr";
+	std::string pname = "ui.exe";
+	std::string pname_aft_pack = "ui.exe.ajr";
 
 	int start = std::clock();
 	
