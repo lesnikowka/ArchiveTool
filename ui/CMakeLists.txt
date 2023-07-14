@@ -1,9 +1,8 @@
 set(TARGET ui)
 project(${TARGET})
 
-file(GLOB srcs "*.cpp*")
-file(GLOB hdrs "*.h*")
+file(GLOB srcs "*.cpp*" "*.h*")
 
-add_executable(${TARGET} ${srcs} ${hdrs})
+add_executable(${TARGET} ${srcs})
 
-target_link_libraries(${TARGET} ${MP_CUSTOM_PROJECT})
+target_include_directories(${TARGET} PUBLIC ${MP_INCLUDE})
