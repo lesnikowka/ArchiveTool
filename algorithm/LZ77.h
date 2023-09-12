@@ -2,13 +2,16 @@
 
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
+#include <set>
 
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 500;
+	const size_t SIZE_OF_DICT = 4000;
 	const size_t SIZE_OF_BUF = 16;
 	const size_t MIN_SEQ_SIZE = 13;
+	const size_t HASH_SEQUENCE_SIZE = 3;
 
 
 	std::string encode(const std::string& data) { 
@@ -32,6 +35,10 @@ public:
 
 		long long last_index;
 
+		std::unordered_map<std::string, std::set<size_t>> indexesForSequence;
+
+		addSequences(indexesForSequence, data, 0, SIZE_OF_DICT);
+
 		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
 
 			last_index = i;
@@ -41,7 +48,7 @@ public:
 			for (size_t j = SIZE_OF_BUF; j >= MIN_SEQ_SIZE && !concurrency; j--) { 
 				std::string word = data.substr(i + SIZE_OF_DICT, j);
 
-				long long place = find(data, word, i + SIZE_OF_DICT - 1);
+				long long place = find(indexesForSequence, data, word, i + SIZE_OF_DICT);
 
 				if (place != -1) {
 
@@ -64,6 +71,9 @@ public:
 			if (!concurrency) {
 				compressed_data += data.substr(i + SIZE_OF_DICT, SIZE_OF_BUF);
 			}
+
+			deleteSequences(indexesForSequence, data, i, i + SIZE_OF_BUF);
+			addSequences(indexesForSequence, data, i + SIZE_OF_DICT, i + SIZE_OF_DICT + SIZE_OF_BUF);
 		}
 
 		if (last_index + SIZE_OF_BUF + SIZE_OF_DICT != data.size()) {
@@ -100,19 +110,22 @@ public:
 
 private:
 
-	long long find(const std::string& source, const std::string& sub, size_t current) {
-		for (long long i = current; i >= (long long)current - (long long)SIZE_OF_DICT + 1; i--) {
-			bool concurrency = true;
-			for (long long j = sub.size() - 1; j >= 0; j--) {
-				if (source[i - (long long)sub.size() + j + 1] != sub[j]) {
-					concurrency = false;
-					break;
+	long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word, size_t current) {
+		std::string sequence = word.substr(0, HASH_SEQUENCE_SIZE);
+
+		auto place = indexesForSequence.find(sequence);
+
+		if (place != indexesForSequence.end()) {
+
+			for (auto index = (*place).second.cbegin(); index != (*place).second.cend(); ++index) {
+
+				if (*index <= current - word.size() && data.substr(*index, word.size()) == word) {
+
+					return *index;
 				}
 			}
-			if (concurrency) {
-				return i - sub.size() + 1;
-			}
 		}
+
 		return -1;
 	}
 
@@ -163,5 +176,25 @@ private:
 		}
 
 		return result;
+	}
+
+	void deleteSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
+		for (size_t i = lBound; i <= rBound - HASH_SEQUENCE_SIZE; i++) {
+			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE);
+
+			indexesForSequence[sequence].erase(i);
+
+			if (indexesForSequence[sequence].size() == 0) {
+				indexesForSequence.erase(sequence);
+			}
+		}
+	}
+
+	void addSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
+		for (size_t i = lBound; i <= rBound - HASH_SEQUENCE_SIZE; i++) {
+			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE);
+
+			indexesForSequence[sequence].insert(i);
+		}
 	}
 };
