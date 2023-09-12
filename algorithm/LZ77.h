@@ -37,7 +37,7 @@ public:
 
 		std::unordered_map<std::string, std::set<size_t>> indexesForSequence;
 
-		//addSequences(indexesForSequence, data, 0, SIZE_OF_DICT);
+		addSequences(indexesForSequence, data, 0, SIZE_OF_DICT);
 
 		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
 
@@ -50,11 +50,13 @@ public:
 
 				long long place_ = find_(data, word, i + SIZE_OF_DICT - 1);
 
-				long long place = find(indexesForSequence, data, word);
+				long long place = find(indexesForSequence, data, word, i + SIZE_OF_DICT);
+
+				bool bb = place > (long long)(i + SIZE_OF_DICT - word.size());
 
 
 
-				if (place > (long long)(i + SIZE_OF_DICT - word.size())) { //  _ _ _ _ _ _ _ i + sizeofdict
+				if (bb) { //  _ _ _ _ _ _ _ i + sizeofdict
 					std::cout << "place: " <<  place << " cur_pos: " << i + SIZE_OF_DICT << " word_size: " << word.size() << std::endl;
 				}
 
@@ -79,8 +81,9 @@ public:
 			if (!concurrency) {
 				compressed_data += data.substr(i + SIZE_OF_DICT, SIZE_OF_BUF);
 			}
+			// _ _ _ _. f_ _ _. _ _ _ 
 
-			//deleteSequences(indexesForSequence, data, i, i + SIZE_OF_BUF);
+			deleteSequences(indexesForSequence, data, i, i + SIZE_OF_BUF);
 			addSequences(indexesForSequence, data, i + SIZE_OF_DICT, i + SIZE_OF_DICT + SIZE_OF_BUF);
 		}
 
@@ -134,7 +137,7 @@ private:
 		return -1;
 	}
 
-	long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word) {
+	long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word, size_t current) {
 		std::string sequence = word.substr(0, HASH_SEQUENCE_SIZE);
 
 		auto place = indexesForSequence.find(sequence);
@@ -143,7 +146,7 @@ private:
 
 			for (auto index = (*place).second.cbegin(); index != (*place).second.cend(); ++index) {
 
-				if (data.substr(*index, word.size()) == word) {
+				if (*index <= current - word.size() && data.substr(*index, word.size()) == word) {
 
 					return *index;
 				}
