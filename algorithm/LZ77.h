@@ -8,7 +8,7 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 500;
+	const size_t SIZE_OF_DICT = 4000;
 	const size_t SIZE_OF_BUF = 16;
 	const size_t MIN_SEQ_SIZE = 13;
 	const size_t HASH_SEQUENCE_SIZE = 3;
@@ -48,17 +48,7 @@ public:
 			for (size_t j = SIZE_OF_BUF; j >= MIN_SEQ_SIZE && !concurrency; j--) { 
 				std::string word = data.substr(i + SIZE_OF_DICT, j);
 
-				long long place_ = find_(data, word, i + SIZE_OF_DICT - 1);
-
 				long long place = find(indexesForSequence, data, word, i + SIZE_OF_DICT);
-
-				bool bb = place > (long long)(i + SIZE_OF_DICT - word.size());
-
-
-
-				if (bb) { //  _ _ _ _ _ _ _ i + sizeofdict
-					std::cout << "place: " <<  place << " cur_pos: " << i + SIZE_OF_DICT << " word_size: " << word.size() << std::endl;
-				}
 
 				if (place != -1) {
 
@@ -81,7 +71,6 @@ public:
 			if (!concurrency) {
 				compressed_data += data.substr(i + SIZE_OF_DICT, SIZE_OF_BUF);
 			}
-			// _ _ _ _. f_ _ _. _ _ _ 
 
 			deleteSequences(indexesForSequence, data, i, i + SIZE_OF_BUF);
 			addSequences(indexesForSequence, data, i + SIZE_OF_DICT, i + SIZE_OF_DICT + SIZE_OF_BUF);
@@ -120,22 +109,6 @@ public:
 	}
 
 private:
-
-	long long find_(const std::string& source, const std::string& sub, size_t current) {
-		for (long long i = current; i >= (long long)current - (long long)SIZE_OF_DICT + 1; i--) {
-			bool concurrency = true;
-			for (long long j = sub.size() - 1; j >= 0; j--) {
-				if (source[i - (long long)sub.size() + j + 1] != sub[j]) {
-					concurrency = false;
-					break;
-				}
-			}
-			if (concurrency) {
-				return i - sub.size() + 1;
-			}
-		}
-		return -1;
-	}
 
 	long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word, size_t current) {
 		std::string sequence = word.substr(0, HASH_SEQUENCE_SIZE);
