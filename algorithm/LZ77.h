@@ -8,11 +8,11 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 4000;
+	const size_t SIZE_OF_DICT = 16000;
 	const size_t SIZE_OF_BUF = 16;
 	const size_t MIN_SEQ_SIZE = 13;
-	const size_t HASH_SEQUENCE_SIZE = 3;
-
+	const size_t HASH_SEQUENCE_SIZE = 5;
+	const size_t MAX_DISTANCE = 2e16 - 16;
 
 	std::string encode(const std::string& data) { 
 		std::string compressed_data;
@@ -40,6 +40,17 @@ public:
 		addSequences(indexesForSequence, data, 0, SIZE_OF_DICT);
 
 		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
+
+			if (i + SIZE_OF_DICT - last_replace > MAX_DISTANCE) {
+				writeNext(compressed_data, last_replace_in_compressed_data, i + SIZE_OF_DICT - last_replace);
+
+				std::string triple = makeTriple(0, 0);
+
+				compressed_data += triple;
+
+				last_replace_in_compressed_data = compressed_data.size();
+				last_replace = i + SIZE_OF_DICT;
+			}
 
 			last_index = i;
 
