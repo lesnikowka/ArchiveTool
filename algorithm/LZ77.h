@@ -8,11 +8,11 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 16000;
+	const size_t SIZE_OF_DICT = 32000;
 	const size_t SIZE_OF_BUF = 12;
 	const size_t MIN_SEQ_SIZE = 6;
 	const size_t HASH_SEQUENCE_SIZE = 3;
-	const size_t MAX_DISTANCE = 65000;
+	const size_t MAX_DISTANCE = 16000;
 
 	std::string encode(const std::string& data) { 
 		std::string compressed_data;
@@ -41,17 +41,6 @@ public:
 
 		for (size_t i = 0; i <= maxSize; i += SIZE_OF_BUF) {
 
-			if (i + SIZE_OF_DICT - last_replace > MAX_DISTANCE) {
-				writeNext(compressed_data, last_replace_in_compressed_data, i + SIZE_OF_DICT - last_replace);
-			
-				std::string triple = makeTriple(0, 0);
-			
-				compressed_data += triple;
-			
-				last_replace_in_compressed_data = compressed_data.size();
-				last_replace = i + SIZE_OF_DICT;
-			}
-
 			last_index = i;
 
 			bool concurrency = false;
@@ -73,7 +62,9 @@ public:
 
 					std::string triple = makeTriple(i + SIZE_OF_DICT - place, j);
 
-					//std::cout << "back: " << (long long)i + (long long)SIZE_OF_DICT - place << " after reducing: " << (uint16_t) (i + SIZE_OF_DICT - place)<< std::endl;
+					if ((long long)i + (long long)SIZE_OF_DICT - place != (uint16_t)(i + SIZE_OF_DICT - place)) {
+						std::cout << "back: " << (long long)i + (long long)SIZE_OF_DICT - place << " after reducing: " << (uint16_t)(i + SIZE_OF_DICT - place) << std::endl;
+					}
 
 
 					compressed_data += triple;
@@ -85,6 +76,18 @@ public:
 
 			if (!concurrency) {
 				compressed_data += data.substr(i + SIZE_OF_DICT, SIZE_OF_BUF);
+
+				if (i + SIZE_OF_DICT - last_replace > MAX_DISTANCE) {
+					writeNext(compressed_data, last_replace_in_compressed_data, i + SIZE_OF_DICT - last_replace);
+
+					std::string triple = makeTriple(0, 0);
+
+					last_replace_in_compressed_data = compressed_data.size();
+					last_replace = i + SIZE_OF_DICT;
+
+					compressed_data += triple;
+
+				}
 			}
 
 			deleteSequences(indexesForSequence, data, i, i + SIZE_OF_BUF);

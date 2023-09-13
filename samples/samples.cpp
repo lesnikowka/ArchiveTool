@@ -36,7 +36,7 @@ int main() {
 	std::string dir = "C:/Users/lesni/Desktop/";
 	std::string outdir = "C:/Users/lesni/Desktop/";
 	std::string decdir = "C:/Users/lesni/Desktop/dec/";
-	std::string name = "1.pdf";
+	std::string name = "1221.pdf";
 	std::string name_aft_pack = name + ".ajr";
 
 	int start = std::clock();
