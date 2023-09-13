@@ -9,8 +9,8 @@
 class LZ77 {
 public:
 	const size_t SIZE_OF_DICT = 16000;
-	const size_t SIZE_OF_BUF = 16;
-	const size_t MIN_SEQ_SIZE = 13;
+	const size_t SIZE_OF_BUF = 12;
+	const size_t MIN_SEQ_SIZE = 6;
 	const size_t HASH_SEQUENCE_SIZE = 5;
 	const size_t MAX_DISTANCE = 2e16 - 16;
 
@@ -97,19 +97,19 @@ public:
 	std::string decode(const std::string& compressed_data) { 
 		std::string decompressed_data;
 
-		unsigned long long triple_index = get_int(compressed_data, 8);
+		unsigned long long triple_index = get_int<2>(compressed_data, 3);
 
-		decompressed_data += compressed_data.substr(12, SIZE_OF_DICT);
+		decompressed_data += compressed_data.substr(5, SIZE_OF_DICT);
 
-		for (long long i = 12 + SIZE_OF_DICT; i < compressed_data.size(); i++) {
+		for (long long i = 5 + SIZE_OF_DICT; i < compressed_data.size(); i++) {
 
 			if (triple_index == decompressed_data.size()) {
-				unsigned back = get_int(compressed_data, i);
-				unsigned length = get_int(compressed_data, i + 4);
-				triple_index += get_int(compressed_data, i + 8);
+				unsigned back = get_int<2>(compressed_data, i);
+				unsigned length = get_int<1>(compressed_data, i + 2);
+				triple_index += get_int<2>(compressed_data, i + 3);
 
 				decompressed_data += decompressed_data.substr((long long)decompressed_data.size() - back, length);
-				i += 11;
+				i += 4;
 			}
 			else {
 				decompressed_data += compressed_data[i];
@@ -146,17 +146,19 @@ private:
 
 		unsigned tmp;
 
-		for (int i = 0; i < 4; i++) {
-			tmp = (back << (8 * i)) >> 24;
+		for (int i = 0; i < 2; i++) {
+			tmp = (back << (8 * i)) >> 8;
 			triple += tmp;
 		}
 
-		for (int i = 0; i < 4; i++) {
-			tmp = (n << (8 * i)) >> 24;
-			triple += tmp;
-		}
+		//for (int i = 0; i < 1; i++) {
+		//	tmp = (n << (8 * i)) >> 24;
+		//	triple += tmp;
+		//}
 
-		for (int i = 0; i < 4; i++) {
+		triple += n;
+
+		for (int i = 0; i < 2; i++) {
 			triple += '\0';
 		}
 
@@ -164,26 +166,27 @@ private:
 	}
 
 	void writeNext(std::string& data, unsigned long long last_replace, unsigned next) {
-		for (int i = 0; i < 4; i++) {
-			unsigned shifted_next = (next << (8 * i)) >> 24;
+		for (int i = 0; i < 2; i++) {
+			unsigned shifted_next = (next << (8 * i)) >> 8;
 			unsigned char c = shifted_next;
 			char c2 = c;
-			data[last_replace + 8 + i] = c2;
+			data[last_replace + 3 + i] = c2;
 		}
 	}
 
+	template<int Tsize>
 	unsigned get_int(const std::string& data, size_t pos) {
-		if (pos + 4 > data.size()) {
-			throw std::range_error("index out of the bounds");
+		if (pos + Tsize > data.size()) {
+			throw std::range_error("index out of the bounds"); // _ _ _ _
 		}
 
 		unsigned result = 0;
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < Tsize; i++) {
 			unsigned a = (unsigned char)data[pos + i];
-			a = a << (24 - 8 * i);
+			a = a << ((Tsize - 1) * 8 - 8 * i);
 
-			result += ((unsigned)(unsigned char)data[pos + i]) << (24 - 8 * i);
+			result += a;
 		}
 
 		return result;
