@@ -11,8 +11,8 @@ public:
 	const size_t SIZE_OF_DICT = 16000;
 	const size_t SIZE_OF_BUF = 12;
 	const size_t MIN_SEQ_SIZE = 6;
-	const size_t HASH_SEQUENCE_SIZE = 5;
-	const size_t MAX_DISTANCE = 2e16 - 16;
+	const size_t HASH_SEQUENCE_SIZE = 3;
+	const size_t MAX_DISTANCE = 65000;
 
 	std::string encode(const std::string& data) { 
 		std::string compressed_data;
@@ -43,11 +43,11 @@ public:
 
 			if (i + SIZE_OF_DICT - last_replace > MAX_DISTANCE) {
 				writeNext(compressed_data, last_replace_in_compressed_data, i + SIZE_OF_DICT - last_replace);
-
+			
 				std::string triple = makeTriple(0, 0);
-
+			
 				compressed_data += triple;
-
+			
 				last_replace_in_compressed_data = compressed_data.size();
 				last_replace = i + SIZE_OF_DICT;
 			}
@@ -60,6 +60,7 @@ public:
 				std::string word = data.substr(i + SIZE_OF_DICT, j);
 
 				long long place = find(indexesForSequence, data, word, i + SIZE_OF_DICT);
+				//long long place = find_(data, word, i + SIZE_OF_DICT - 1);
 
 				if (place != -1) {
 
@@ -71,6 +72,9 @@ public:
 					last_replace_in_compressed_data = compressed_data.size();
 
 					std::string triple = makeTriple(i + SIZE_OF_DICT - place, j);
+
+					//std::cout << "back: " << (long long)i + (long long)SIZE_OF_DICT - place << " after reducing: " << (uint16_t) (i + SIZE_OF_DICT - place)<< std::endl;
+
 
 					compressed_data += triple;
 
@@ -85,6 +89,9 @@ public:
 
 			deleteSequences(indexesForSequence, data, i, i + SIZE_OF_BUF);
 			addSequences(indexesForSequence, data, i + SIZE_OF_DICT, i + SIZE_OF_DICT + SIZE_OF_BUF);
+			
+			//std::string ssss;
+			//std::cin >> ssss;
 		}
 
 		if (last_index + SIZE_OF_BUF + SIZE_OF_DICT != data.size()) {
@@ -97,7 +104,7 @@ public:
 	std::string decode(const std::string& compressed_data) { 
 		std::string decompressed_data;
 
-		unsigned long long triple_index = get_int<2>(compressed_data, 3);
+		unsigned long long triple_index = get_int<2>(compressed_data, 3); // 0 1 2 3 4 5 
 
 		decompressed_data += compressed_data.substr(5, SIZE_OF_DICT);
 
@@ -119,7 +126,24 @@ public:
 		return decompressed_data;
 	}
 
-private:
+public:
+
+	long long find_(const std::string& source, const std::string& sub, size_t current) {
+		for (long long i = current; i >= (long long)current - (long long)SIZE_OF_DICT + 1; i--) {
+			bool concurrency = true;
+			for (long long j = sub.size() - 1; j >= 0; j--) {
+				if (source[i - (long long)sub.size() + j + 1] != sub[j]) {
+					concurrency = false;
+					break;
+				}
+			}
+			if (concurrency) {
+				return i - sub.size() + 1;
+			}
+		}
+		return -1;
+	}
+
 
 	long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word, size_t current) {
 		std::string sequence = word.substr(0, HASH_SEQUENCE_SIZE);
@@ -186,17 +210,19 @@ private:
 			unsigned a = (unsigned char)data[pos + i];
 			a = a << ((Tsize - 1) * 8 - 8 * i);
 
-			result += a;
+			result += ((unsigned)(unsigned char)data[pos + i]) << ((Tsize - 1) * 8 - 8 * i);
 		}
 
 		return result;
 	}
 
 	void deleteSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
-		for (size_t i = lBound; i <= rBound - HASH_SEQUENCE_SIZE; i++) {
+		for (size_t i = lBound; i < rBound; i++) {
 			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE);
 
 			indexesForSequence[sequence].erase(i);
+
+			//std::cout << "deleted: " << i << std::endl;
 
 			if (indexesForSequence[sequence].size() == 0) {
 				indexesForSequence.erase(sequence);
@@ -206,7 +232,10 @@ private:
 
 	void addSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
 		for (size_t i = lBound; i <= rBound - HASH_SEQUENCE_SIZE; i++) {
-			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE);
+			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE); // _ _ _ _ _ rbound
+
+
+			//std::cout << "added: " << i << std::endl;
 
 			indexesForSequence[sequence].insert(i);
 		}
