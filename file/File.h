@@ -29,11 +29,15 @@ struct File {
 	File& operator=(const File& file) {
 		data = file.data;
 		directory = file.directory;
+
+		return *this;
 	}
 
 	File& operator=(File&& file) {
 		data = std::move(file.data);
 		directory = std::move(file.directory);
+
+		return *this;
 	}
 
 };
