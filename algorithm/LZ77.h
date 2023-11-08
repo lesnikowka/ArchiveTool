@@ -8,12 +8,12 @@
 
 class LZ77 {
 public:
-	const size_t SIZE_OF_DICT = 32000;
-	const size_t SIZE_OF_BUF = 17;
-	const size_t MIN_SEQ_SIZE = 13;
-	const size_t HASH_SEQUENCE_SIZE = 6;
+	static const size_t SIZE_OF_DICT = 32000;
+	static const size_t SIZE_OF_BUF = 17;
+	static const size_t MIN_SEQ_SIZE = 13;
+	static const size_t HASH_SEQUENCE_SIZE = 6;
 
-	std::string encode(const std::string& data) { 
+	static std::string encode(const std::string& data) {
 		std::string compressed_data;
 
 		long long last_replace = 0;
@@ -82,7 +82,7 @@ public:
 		return compressed_data;
 	}
 
-	std::string decode(const std::string& compressed_data) {
+	static std::string decode(const std::string& compressed_data) {
 		std::string decompressed_data;
 
 		unsigned long long triple_index = get_int(compressed_data, 8);
@@ -108,8 +108,9 @@ public:
 	}
 
 public:
+	LZ77() = delete;
 
-	long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word, size_t current) {
+	static long long find(const std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, const std::string& word, size_t current) {
 		std::string sequence = word.substr(0, HASH_SEQUENCE_SIZE);
 
 		auto place = indexesForSequence.find(sequence);
@@ -129,7 +130,7 @@ public:
 	}
 
 
-	std::string makeTriple(unsigned back, unsigned n) {
+	static std::string makeTriple(unsigned back, unsigned n) {
 		std::string triple;
 
 		unsigned tmp;
@@ -151,13 +152,13 @@ public:
 		return triple;
 	}
 
-	void writeNext(std::string& data, unsigned long long last_replace, unsigned next) {
+	static void writeNext(std::string& data, unsigned long long last_replace, unsigned next) {
 		for (int i = 0; i < 4; i++) {
 			data[last_replace + 8 + i] = (next << (8 * i)) >> 24;
 		}
 	}
 
-	unsigned get_int(const std::string& data, size_t pos) {
+	static unsigned get_int(const std::string& data, size_t pos) {
 		if (pos + 4 > data.size()) {
 			throw std::range_error("index out of the bounds");
 		}
@@ -171,7 +172,7 @@ public:
 		return result;
 	}
 
-	void deleteSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
+	static void deleteSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
 		for (size_t i = lBound; i < rBound; i++) {
 			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE);
 
@@ -183,7 +184,7 @@ public:
 		}
 	}
 
-	void addSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
+	static void addSequences(std::unordered_map<std::string, std::set<size_t>>& indexesForSequence, const std::string& data, size_t lBound, size_t rBound) {
 		for (size_t i = lBound; i <= rBound - HASH_SEQUENCE_SIZE; i++) {
 			std::string sequence = data.substr(i, HASH_SEQUENCE_SIZE); 
 

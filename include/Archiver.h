@@ -2,13 +2,16 @@
 
 #include "File.h"
 #include "RLE.h"
-#include <list>
 #include "Haffman.h"
 #include "LZ77.h"
+#include "pool.h"
+
+#include <list>
+#include <thread>
+#include <mutex>
 
 
 const std::string ARCHIVE_EXTENSION = ".ajr";
-
 
 class Archiver {
 public:
@@ -45,19 +48,22 @@ public:
 	}
 
 	void compress() {
-		LZ77 lz;
-		Haffman haff;
+		ThreadPool threadPool(std::thread::hardware_concurrency());
+		std::mutex compressedFilesMutex;
 
-		auto it = files.begin();
+		for (auto it = files.begin(); it != files.end(); ++it){
+			threadPool.add_task([&, it] {
+				std::string lzCompressedData = LZ77::encode((*it).data);
+				TBitField haffCompressedData = Haffman::encode(lzCompressedData);
 
-		while (it != files.end()) {
-			std::string lzCompressedData = lz.encode((*it).data);
-
-			compressedFiles.push_back(File<TBitField>(haff.encode(lzCompressedData), (*it).directory));
-
-			it = files.erase(it);
+				std::lock_guard<std::mutex> lg(compressedFilesMutex);
+				compressedFiles.push_back(File<TBitField>(haffCompressedData, (*it).directory));
+			});
 		}
 
+		threadPool.wait_all_tasks();
+
+		files.clear();
 	}
 
 	void save(const std::string & outputDir) {
@@ -72,6 +78,7 @@ public:
 	}
 private:
 	std::list<File<std::string>> files;
+
 	std::list<File<TBitField>> compressedFiles;
 };
 

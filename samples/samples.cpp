@@ -8,16 +8,18 @@
 
 int main() {
 
-	std::string dir = "C:/Users/lesni/Desktop/data/";
-	std::string outdir = "C:/Users/lesni/Desktop/data/";
-	std::string decdir = "C:/Users/lesni/Desktop/data/dec/";
-	std::string name = "2.pdf";
+	std::string dir = "C:/Users/lesni/Desktop/compression/";
+	std::string outdir = "C:/Users/lesni/Desktop/compression/";
+	std::string decdir = "C:/Users/lesni/Desktop/compression/dec/";
+	std::string name = "1.pdf";
 	std::string name_aft_pack = name + ".ajr";
 
 	int start = std::clock();
 
 	Archiver arch;
 	arch.addFile(dir + name);
+	arch.addFile(dir + "2.pdf");
+	//arch.addFile(dir + "1.mp4");
 	arch.compress();
 	arch.save(outdir);
 
@@ -29,6 +31,7 @@ int main() {
 
 	Unpacker unp;
 	unp.addFile(outdir + name_aft_pack);
+	unp.addFile(outdir + "1.mp4.ajr");
 	unp.unpack();
 	unp.save(decdir);
 

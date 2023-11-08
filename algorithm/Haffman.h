@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include "HaffmanTreeCreator.h"
 #include "tbitfield.h"
@@ -7,12 +8,12 @@
 
 class Haffman {
 
-	const size_t SIZE_OF_SERVICE_INFO = 16448;
+	static const size_t SIZE_OF_SERVICE_INFO = 16448;
 
 public:
-	Haffman() = default;
+	Haffman() = delete;
 
-	TBitField encode(const std::string& data)  {
+	static TBitField encode(const std::string& data)  {
 		HaffmanTreeCreator hc;
 		std::vector<size_t> freq = collectFrequency(data);
 		std::vector<std::vector<bool>> codes = hc.createCodes(freq);
@@ -43,7 +44,7 @@ public:
 		return CompressedData;
 	}
 
-	std::string decode(const TBitField& tf)  {
+	static std::string decode(const TBitField& tf)  {
 		if (tf.GetLength() == 0) {
 			throw std::invalid_argument("Data is empty");
 		}
@@ -87,7 +88,7 @@ public:
 
 	}
 private:
-	std::vector<size_t> collectFrequency(const std::string& data) {
+	static std::vector<size_t> collectFrequency(const std::string& data) {
 		std::vector<size_t> frequency(256);
 
 		for (unsigned char c : data) {
@@ -97,12 +98,12 @@ private:
 		return frequency;
 	}
 
-	std::vector<std::vector<bool>> createHaffmanCodes(const std::vector<size_t> frequency) {
+	static std::vector<std::vector<bool>> createHaffmanCodes(const std::vector<size_t> frequency) {
 		std::vector<std::vector<bool>> haffmanTable(256);
 
 	}
 
-	size_t getSizeOfCompressedData(const std::vector<std::vector<bool>>& codes, const std::vector<size_t>& freq) {
+	static size_t getSizeOfCompressedData(const std::vector<std::vector<bool>>& codes, const std::vector<size_t>& freq) {
 		size_t sizeOfCompressedData = 0;
 
 		for (int i = 0; i < codes.size(); i++) {
@@ -113,7 +114,7 @@ private:
 	}
 
 	template<class T>
-	void writeValueInBitField(TBitField& tf, const T& val, size_t start) {
+	static void writeValueInBitField(TBitField& tf, const T& val, size_t start) {
 		size_t bitsize = sizeof(T) * 8;
 
 		for (int i = bitsize-1; i >= 0; i--) {
@@ -124,7 +125,7 @@ private:
 	}
 
 	template<class T> 
-	T getValueFromBitField(const TBitField& tf, size_t start) {
+	static T getValueFromBitField(const TBitField& tf, size_t start) {
 		size_t bitsize = sizeof(T) * 8;
 		T val = 0;
 
@@ -139,7 +140,7 @@ private:
 		return val;
 	}
 
-	std::string boolVectorToString(const std::vector<bool> code) {
+	static std::string boolVectorToString(const std::vector<bool> code) {
 		std::string result;
 		result.resize(code.size());
 
@@ -150,7 +151,7 @@ private:
 		return result;
 	}
 
-	std::vector<size_t> loadFreq(const TBitField& tf) {
+	static std::vector<size_t> loadFreq(const TBitField& tf) {
 		std::vector<size_t> freq(256);
 
 		size_t bitsize = sizeof(size_t) * 8;
@@ -162,7 +163,7 @@ private:
 		return freq;
 	}
 
-	size_t getSizeOfDecompressedData(const std::vector<size_t> freq) {
+	static size_t getSizeOfDecompressedData(const std::vector<size_t> freq) {
 		size_t size = std::accumulate(freq.begin(), freq.end(), 0);
 
 		return size;

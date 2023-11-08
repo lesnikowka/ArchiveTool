@@ -6,12 +6,12 @@
 
 class RLE {
 
-	const unsigned MAX_LENGHT = 126;
+	static const unsigned MAX_LENGHT = 126;
 
 public:
-	RLE() = default;
-	
-	std::string encode(const std::string& data) {
+	RLE() = delete;
+
+	static std::string encode(const std::string& data) {
 		std::string result;
 		
 		if (data.size() > 3) {
@@ -57,7 +57,7 @@ public:
 		return result;
 	}
 
-	std::string decode(const std::string& data)  {
+	static std::string decode(const std::string& data)  {
 		std::string encodedData;
 
 		std::pair<bool, unsigned> info;
@@ -80,7 +80,7 @@ public:
 
 private:
 
-	unsigned char getSignByte(bool isSimilarSequence, int lenght) {
+	static unsigned char getSignByte(bool isSimilarSequence, int lenght) {
 		assert(lenght <= 127 && lenght >=0);
 		
 		unsigned char result = isSimilarSequence;
@@ -89,13 +89,13 @@ private:
 		return result;
 	}
 
-	std::pair<bool, unsigned> getLenghtAndIsSimilar(unsigned char c) {
+	static std::pair<bool, unsigned> getLenghtAndIsSimilar(unsigned char c) {
 		unsigned char s = c << 7;
 
 		return std::make_pair(s, (c >> 1));
 	}
 
-	void addSimilarSequence(std::string& s, unsigned char c, unsigned n) {
+	static void addSimilarSequence(std::string& s, unsigned char c, unsigned n) {
 		for (unsigned i = 0; i < n; i++) {
 			s += c;
 		}

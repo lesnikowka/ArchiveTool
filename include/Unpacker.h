@@ -2,8 +2,10 @@
 
 #include "File.h"
 #include "RLE.h"
-#include <list>
 #include "Haffman.h"
+#include "pool.h"
+
+#include <list>
 #include <Archiver.h>
 
 
@@ -63,14 +65,11 @@ public:
 	}
 
 	void unpack() {
-		Haffman haff;
-		LZ77 lz;
-
 		auto it = files.begin();
 		while (it != files.end()) {
-			std::string haffDecompressedData = haff.decode((*it).data);
+			std::string haffDecompressedData = Haffman::decode((*it).data);
 
-			unpackedFiles.push_back(File<std::string>(lz.decode(haffDecompressedData), delExtension((*it).directory, ARCHIVE_EXTENSION)));
+			unpackedFiles.push_back(File<std::string>(LZ77::decode(haffDecompressedData), delExtension((*it).directory, ARCHIVE_EXTENSION)));
 			it = files.erase(it);
 		}
 	}
