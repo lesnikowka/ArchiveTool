@@ -31,7 +31,8 @@ int main() {
 
 	Unpacker unp;
 	unp.addFile(outdir + name_aft_pack);
-	unp.addFile(outdir + "1.mp4.ajr");
+	unp.addFile(outdir + "2.pdf.ajr");
+	//unp.addFile(outdir + "1.mp4.ajr");
 	unp.unpack();
 	unp.save(decdir);
 

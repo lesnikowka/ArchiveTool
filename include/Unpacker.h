@@ -65,13 +65,22 @@ public:
 	}
 
 	void unpack() {
-		auto it = files.begin();
-		while (it != files.end()) {
-			std::string haffDecompressedData = Haffman::decode((*it).data);
+		ThreadPool threadPool(std::thread::hardware_concurrency());
+		std::mutex unpackedFilesMutex;
 
-			unpackedFiles.push_back(File<std::string>(LZ77::decode(haffDecompressedData), delExtension((*it).directory, ARCHIVE_EXTENSION)));
-			it = files.erase(it);
+		for (auto it = files.begin(); it != files.end(); ++it) {
+			threadPool.add_task([&, it] {
+				std::string haffDecompressedData = Haffman::decode((*it).data);
+				std::string lzDecompressedData = LZ77::decode(haffDecompressedData);
+
+				std::lock_guard<std::mutex> lg(unpackedFilesMutex);
+				unpackedFiles.push_back(File<std::string>(lzDecompressedData, delExtension((*it).directory, ARCHIVE_EXTENSION)));
+				});
 		}
+
+		threadPool.wait_all_tasks();
+
+		files.clear();
 	}
 
 	void save(const std::string& outputDir) {
